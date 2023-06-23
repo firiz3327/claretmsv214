@@ -28,10 +28,7 @@ public class ScriptMan {
         outPacket.encodeByte(nsi.getColor()); // idk why these are flipped
 
         switch (nmt) {
-            case Say:
-            case SayOk:
-            case SayNext:
-            case SayPrev:
+            case Say, SayOk, SayNext, SayPrev -> {
                 if ((nsi.getParam() & 4) != 0) {
                     outPacket.encodeInt(nsi.getInnerOverrideSpeakerTemplateID());
                 }
@@ -39,26 +36,25 @@ public class ScriptMan {
                 outPacket.encodeByte(nmt.isPrevPossible());
                 outPacket.encodeByte(nmt.isNextPossible());
                 outPacket.encodeInt(nmt.getDelay());
-                break;
-            case AskMenu:
-            case AskYesNo:
+            }
+            case AskMenu, AskYesNo -> {
                 if ((nsi.getParam() & 4) != 0) {
                     outPacket.encodeInt(nsi.getInnerOverrideSpeakerTemplateID());
                 }
                 outPacket.encodeString(nsi.getText());
-                break;
-            case AskAccept:
+            }
+            case AskAccept -> {
                 outPacket.encodeInt(nsi.getInnerOverrideSpeakerTemplateID());
                 outPacket.encodeString(nsi.getText());
-                break;
-            case SayImage:
+            }
+            case SayImage -> {
                 String[] images = nsi.getImages();
                 outPacket.encodeByte(images.length);
                 for (String image : images) {
                     outPacket.encodeString(image);
                 }
-                break;
-            case AskText:
+            }
+            case AskText -> {
                 if ((nsi.getParam() & 4) != 0) {
                     outPacket.encodeInt(nsi.getInnerOverrideSpeakerTemplateID());
                 }
@@ -66,14 +62,14 @@ public class ScriptMan {
                 outPacket.encodeString(nsi.getDefaultText());
                 outPacket.encodeShort(nsi.getMin());
                 outPacket.encodeShort(nsi.getMax());
-                break;
-            case AskNumber:
+            }
+            case AskNumber -> {
                 outPacket.encodeString(nsi.getText());
                 outPacket.encodeInt(nsi.getDefaultNumber());
                 outPacket.encodeInt(nsi.getMin());
                 outPacket.encodeInt(nsi.getMax());
-                break;
-            case InitialQuiz:
+            }
+            case InitialQuiz -> {
                 outPacket.encodeByte(nsi.getType());
                 if (nsi.getType() != 1) {
                     outPacket.encodeString(nsi.getTitle());
@@ -83,8 +79,8 @@ public class ScriptMan {
                     outPacket.encodeInt(nsi.getMax());
                     outPacket.encodeInt(nsi.getTime()); // in seconds
                 }
-                break;
-            case InitialSpeedQuiz:
+            }
+            case InitialSpeedQuiz -> {
                 outPacket.encodeByte(nsi.getType());
                 if (nsi.getType() != 1) {
                     outPacket.encodeInt(nsi.getQuizType());
@@ -93,18 +89,16 @@ public class ScriptMan {
                     outPacket.encodeInt(nsi.getRemaining());
                     outPacket.encodeInt(nsi.getTime()); // in seconds
                 }
-                break;
-            case ICQuiz:
+            }
+            case ICQuiz -> {
                 outPacket.encodeByte(nsi.getType());
                 if (nsi.getType() != 1) {
                     outPacket.encodeString(nsi.getText());
                     outPacket.encodeString(nsi.getHintText());
                     outPacket.encodeInt(nsi.getTime()); // in seconds
                 }
-                break;
-            case AskAvatar:
-            case AskAvatar2:
-            case AskAvatar3:
+            }
+            case AskAvatar, AskAvatar2, AskAvatar3 -> {
                 int[] options = nsi.getOptions();
                 outPacket.encodeByte(nsi.isAngelicBuster());
                 outPacket.encodeByte(nsi.isZeroBeta());
@@ -116,12 +110,12 @@ public class ScriptMan {
                 for (int option : options) {
                     outPacket.encodeInt(option);
                 }
-                break;
-            case AskSlideMenu:
+            }
+            case AskSlideMenu -> {
                 outPacket.encodeInt(nsi.getDlgType());
                 // start CSlideMenuDlg::SetSlideMenuDlg
                 outPacket.encodeInt(0); // last selected
-                if(nsi.getDlgType() == 0) {
+                if (nsi.getDlgType() == 0) {
                     StringBuilder sb = new StringBuilder();
 
                     for (DimensionalPortalType dpt : DimensionalPortalType.values()) {
@@ -132,7 +126,7 @@ public class ScriptMan {
                     outPacket.encodeString(sb.toString());
                     outPacket.encodeInt(0);
                 }
-                if(nsi.getDlgType() == 5) {
+                if (nsi.getDlgType() == 5) {
                     StringBuilder sb = new StringBuilder();
 
                     for (DimensionalPortalTownType dpt : DimensionalPortalTownType.values()) {
@@ -142,8 +136,8 @@ public class ScriptMan {
                     }
                     outPacket.encodeString(sb.toString());
                 }
-                break;
-            case AskSelectMenu:
+            }
+            case AskSelectMenu -> {
                 outPacket.encodeInt(nsi.getDlgType());
                 if (nsi.getDlgType() <= 0 || nsi.getDlgType() == 1) {
                     outPacket.encodeInt(nsi.getDefaultSelect());
@@ -152,10 +146,56 @@ public class ScriptMan {
                         outPacket.encodeString(selectText);
                     }
                 }
-                break;
+            }
+            case SayIllustration -> {
+                if((nsi.getParam() & 4) != 0) {
+                    outPacket.encodeInt(nsi.getOverrideSpeakerTemplateID());
+                }
+                outPacket.encodeString(nsi.getText());
+                outPacket.encodeByte(nmt.isPrevPossible());
+                outPacket.encodeByte(nmt.isNextPossible());
+                outPacket.encodeInt((nsi.getParam() & 4) != 0 ? nsi.getOverrideSpeakerTemplateID() : overrideTemplate != 0 ? overrideTemplate : nsi.getTemplateID());
+                outPacket.encodeInt(nsi.getFaceIndex());
+                outPacket.encodeByte(nsi.isLeft());
+            }
         }
 
         return outPacket;
     }
+
+//    public static OutPacket scriptMessage(NpcScriptInfo nsi, NpcMessageType nmt, int face, boolean isFaceLeft) {
+//        OutPacket outPacket = new OutPacket(OutHeader.SCRIPT_MESSAGE);
+//
+//        outPacket.encodeByte(nsi.getSpeakerType());
+//        int overrideTemplate = nsi.getOverrideSpeakerTemplateID();
+//        boolean override = overrideTemplate > 0 || nsi.getInnerOverrideSpeakerTemplateID() > 0;
+//        outPacket.encodeInt(nsi.getTemplateID());
+//
+//        outPacket.encodeByte(override);
+//        if (override) {
+//            outPacket.encodeInt(overrideTemplate);
+//        }
+//        outPacket.encodeByte(nmt.getVal());
+//
+//        outPacket.encodeShort(nsi.getParam());
+//        outPacket.encodeByte(nsi.getColor()); // idk why these are flipped
+//
+//        switch (nmt) {
+//            case SayIllustration -> {
+//                if ((nsi.getParam() & 4) != 0) {
+//                    outPacket.encodeInt(nsi.getInnerOverrideSpeakerTemplateID());
+//                }
+//                outPacket.encodeString(nsi.getText());
+//                outPacket.encodeByte(nmt.isPrevPossible());
+//                outPacket.encodeByte(nmt.isNextPossible());
+////                outPacket.encodeInt(nmt.getDelay());
+//                outPacket.encodeInt(nsi.getTemplateID());
+//                outPacket.encodeInt(face);
+//                outPacket.encodeByte(isFaceLeft);
+//            }
+//        }
+//
+//        return outPacket;
+//    }
 
 }

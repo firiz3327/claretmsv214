@@ -570,4 +570,9 @@ public class Kinesis extends Job {
         chr.addSpToJobByCurrentJob(5);
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return PRESIDENTS_ORDERS;
+    }
 }

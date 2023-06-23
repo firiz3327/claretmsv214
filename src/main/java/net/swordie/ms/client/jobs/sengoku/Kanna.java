@@ -130,7 +130,7 @@ public class Kanna extends Job {
     public static final int BELLFLOWER_BARRIER = 42121005; //AoE
     public static final int BELLFLOWER_BARRIER_PERSIST_H = 42120049;
     public static final int BELLFLOWER_BARRIER_BOSS_RUSH_H = 42120051;
-    public static final int AKATUSKI_HERO_KANNA = 42121006;
+    public static final int AKATSUKI_HERO_KANNA = 42121006;
     public static final int NINE_TAILED_FURY = 42121024; //Attacking Skill + Buff
     public static final int BINDING_TEMPEST = 42121004;
     public static final int BLOSSOMING_DAWN = 42121007;
@@ -372,14 +372,7 @@ public class Kanna extends Job {
                 o1.nOption = 1;
                 o1.rOption = skill.getSkillId();
                 o1.tOption = si.getValue(time, slv);
-                for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
-                    Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
-                    if (mob == null) {
-                        continue;
-                    }
-                    MobTemporaryStat mts = mob.getTemporaryStat();
-                    mts.addStatOptionsAndBroadcast(MobStat.Stun, o1);
-                }
+                Job.applyStun(attackInfo, chr, o1);
                 break;
             case SOUL_SHEAR:
                 explodeSoulShearBomb();
@@ -905,9 +898,9 @@ public class Kanna extends Job {
 
                 field.spawnAddSummon(kishinL);
                 field.spawnAddSummon(kishinR);
-                field.setKishin(true);
+//                field.setKishin(true);
                 break;
-            case AKATUSKI_HERO_KANNA:
+            case AKATSUKI_HERO_KANNA:
                 o1.nReason = skillID;
                 o1.nValue = si.getValue(x, slv);
                 o1.tTerm = si.getValue(time, slv);
@@ -1103,5 +1096,10 @@ public class Kanna extends Job {
         chr.healMP(chr.getMaxMP());
         handleJobAdvance(JobConstants.JobEnum.KANNA_1.getJobId());
         chr.addSpToJobByCurrentJob(5);
+    }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return AKATSUKI_HERO_KANNA;
     }
 }

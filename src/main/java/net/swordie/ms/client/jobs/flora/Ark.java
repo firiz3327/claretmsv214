@@ -732,4 +732,9 @@ public class Ark extends Job {
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1353600)); // Initial Path (2ndary)
         chr.addSpToJobByCurrentJob(3);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return HERO_OF_THE_FLORA;
+    }
 }

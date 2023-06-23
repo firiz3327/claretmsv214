@@ -621,4 +621,9 @@ public class Mechanic extends Citizen {
         bullet.setQuantity(1600);
         chr.addItemToInventory(bullet);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_MECH;
+    }
 }

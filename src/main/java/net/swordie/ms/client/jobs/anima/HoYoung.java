@@ -831,4 +831,9 @@ public class HoYoung extends Job {
         }
         super.handleMobDamaged(chr, mob, damage);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return ANIMA_WARRIOR;
+    }
 }

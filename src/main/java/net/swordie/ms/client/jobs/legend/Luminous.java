@@ -274,14 +274,7 @@ public class Luminous extends Job {
                 o1.nOption = 1;
                 o1.rOption = skill.getSkillId();
                 o1.tOption = si.getValue(time, slv);
-                for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
-                    Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
-                    if (mob == null) {
-                        continue;
-                    }
-                    MobTemporaryStat mts = mob.getTemporaryStat();
-                    mts.addStatOptionsAndBroadcast(MobStat.Stun, o1);
-                }
+                Job.applyStun(attackInfo, chr, o1);
                 break;
             case RAY_OF_REDEMPTION:
                 chr.heal(chr.getMaxHP()); // 800% Recovery
@@ -620,5 +613,10 @@ public class Luminous extends Job {
         // Items
 
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1352400)); // Light Orb
+    }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_LUMI;
     }
 }

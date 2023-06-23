@@ -586,4 +586,9 @@ public class DawnWarrior extends Noblesse {
         chr.addItemToInventory(ItemData.getItemDeepCopy(1302077)); // beginner sword
         addMissingSkills(chr);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_DW;
+    }
 }

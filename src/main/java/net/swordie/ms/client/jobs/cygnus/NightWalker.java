@@ -956,4 +956,9 @@ public class NightWalker extends Noblesse {
             chr.addItemToInventory(subi);
         }
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_NW;
+    }
 }

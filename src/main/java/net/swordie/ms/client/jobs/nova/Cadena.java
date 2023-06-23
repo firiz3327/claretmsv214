@@ -259,14 +259,7 @@ public class Cadena extends Job {
                 o1.nOption = 1;
                 o1.rOption = skillID;
                 o1.tOption = 10;
-                for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
-                    Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
-                    if (mob == null) {
-                        continue;
-                    }
-                    MobTemporaryStat mts = mob.getTemporaryStat();
-                    mts.addStatOptionsAndBroadcast(MobStat.Stun, o1);
-                }
+                Job.applyStun(attackInfo, chr, o1);
                 break;
             case SUMMON_DAGGERS:
                 o1.nOption = si.getValue(x, slv);
@@ -567,5 +560,10 @@ public class Cadena extends Job {
         chr.addSpToJobByCurrentJob(3);
         Item secondary = ItemData.getItemDeepCopy(1353300);
         chr.forceUpdateSecondary(null, secondary);
+    }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return NOVA_WARRIOR_CADENA;
     }
 }

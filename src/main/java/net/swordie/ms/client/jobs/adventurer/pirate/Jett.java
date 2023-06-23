@@ -392,4 +392,9 @@ public class Jett extends Pirate {
 
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_JETT;
+    }
 }

@@ -5,7 +5,6 @@ import net.swordie.ms.client.Client;
 import net.swordie.ms.client.LinkSkill;
 import net.swordie.ms.client.character.Char;
 import net.swordie.ms.client.character.CharacterStat;
-import net.swordie.ms.client.character.ExtendSP;
 import net.swordie.ms.client.character.info.HitInfo;
 import net.swordie.ms.client.character.items.Item;
 import net.swordie.ms.client.character.runestones.RuneStone;
@@ -18,18 +17,37 @@ import net.swordie.ms.client.character.skills.temp.CharacterTemporaryStat;
 import net.swordie.ms.client.character.skills.temp.TemporaryStatBase;
 import net.swordie.ms.client.character.skills.temp.TemporaryStatManager;
 import net.swordie.ms.client.jobs.adventurer.BeastTamer;
+import net.swordie.ms.client.jobs.adventurer.Kinesis;
+import net.swordie.ms.client.jobs.adventurer.archer.BowMaster;
+import net.swordie.ms.client.jobs.adventurer.archer.Marksman;
+import net.swordie.ms.client.jobs.adventurer.archer.Pathfinder;
 import net.swordie.ms.client.jobs.adventurer.magician.Bishop;
+import net.swordie.ms.client.jobs.adventurer.magician.FirePoison;
+import net.swordie.ms.client.jobs.adventurer.magician.IceLightning;
+import net.swordie.ms.client.jobs.adventurer.pirate.Buccaneer;
+import net.swordie.ms.client.jobs.adventurer.pirate.Cannonneer;
+import net.swordie.ms.client.jobs.adventurer.pirate.Corsair;
 import net.swordie.ms.client.jobs.adventurer.pirate.Jett;
+import net.swordie.ms.client.jobs.adventurer.thief.BladeMaster;
+import net.swordie.ms.client.jobs.adventurer.thief.NightLord;
+import net.swordie.ms.client.jobs.adventurer.thief.Shadower;
 import net.swordie.ms.client.jobs.adventurer.warrior.DarkKnight;
-import net.swordie.ms.client.jobs.cygnus.BlazeWizard;
-import net.swordie.ms.client.jobs.cygnus.Mihile;
-import net.swordie.ms.client.jobs.cygnus.NightWalker;
-import net.swordie.ms.client.jobs.cygnus.WindArcher;
-import net.swordie.ms.client.jobs.legend.Evan;
-import net.swordie.ms.client.jobs.legend.Mercedes;
-import net.swordie.ms.client.jobs.legend.Phantom;
-import net.swordie.ms.client.jobs.legend.Shade;
-import net.swordie.ms.client.jobs.resistance.Xenon;
+import net.swordie.ms.client.jobs.adventurer.warrior.Hero;
+import net.swordie.ms.client.jobs.adventurer.warrior.Paladin;
+import net.swordie.ms.client.jobs.anima.HoYoung;
+import net.swordie.ms.client.jobs.cygnus.*;
+import net.swordie.ms.client.jobs.flora.Adele;
+import net.swordie.ms.client.jobs.flora.Ark;
+import net.swordie.ms.client.jobs.flora.Illium;
+import net.swordie.ms.client.jobs.legend.*;
+import net.swordie.ms.client.jobs.nova.AngelicBuster;
+import net.swordie.ms.client.jobs.nova.Cadena;
+import net.swordie.ms.client.jobs.nova.Kaiser;
+import net.swordie.ms.client.jobs.resistance.*;
+import net.swordie.ms.client.jobs.resistance.demon.DemonAvenger;
+import net.swordie.ms.client.jobs.resistance.demon.DemonSlayer;
+import net.swordie.ms.client.jobs.sengoku.Hayato;
+import net.swordie.ms.client.jobs.sengoku.Kanna;
 import net.swordie.ms.client.party.Party;
 import net.swordie.ms.client.party.PartyMember;
 import net.swordie.ms.connection.InPacket;
@@ -199,6 +217,22 @@ public abstract class Job {
     public static final int CONVERSION_OVERDRIVE = 400001037;
     public static final int CONVERSION_OVERDRIVE_ATTACK = 400001038;
 
+    public static final int MAPLE_WORLD_GODDESSS_BLESSING = 400001042;
+    public static final int EMPRESS_CYGNUSS_BLESSING = 400001043;
+    public static final int TRANSCENDENT_CYGNUSS_BLESSING = 400001044;
+    public static final int TRANSCENDENT_RHINNES_PRAYER = 400001045;
+    public static final int TRANSCENDENT_RHINNES_PRAYER_2 = 400001056;
+    public static final int GRANDIS_GODDESSS_BLESSING = 400001046;
+    public static final int GRANDIS_GODDESSS_BLESSING_NOVA = 400001047;
+    public static final int GRANDIS_GODDESSS_BLESSING_FLORA = 400001048;
+    public static final int GRANDIS_GODDESSS_BLESSING_ANIMA = 400001049;
+    public static final int OTHERWORLD_GODDESSS_BLESSING = 400001050;
+    public static final int BLESSING_OF_RECOVERY = 400001051;
+    public static final int AEGIS_BLESSING = 400001053;
+    public static final int BLESSING_OF_FORTITUDE = 400001054;
+    public static final int OTHERWORLDLY_VOID = 400001055;
+    public static final int PRINCESS_SAKUNO_BLESSING = 400001057;
+
     private static final int[] buffs = new int[]{
             BOSS_SLAYERS,
             UNDETERRED,
@@ -233,7 +267,80 @@ public abstract class Job {
             SENGOKU_FORCE_ASSEMBLE,
 
             FOR_THE_GUILD,
-            MAPLERUNNER_DASH
+            MAPLERUNNER_DASH,
+
+            MAPLE_WORLD_GODDESSS_BLESSING,
+            EMPRESS_CYGNUSS_BLESSING,
+            TRANSCENDENT_CYGNUSS_BLESSING,
+            TRANSCENDENT_RHINNES_PRAYER,
+//            TRANSCENDENT_RHINNES_PRAYER_2,
+            GRANDIS_GODDESSS_BLESSING,
+            GRANDIS_GODDESSS_BLESSING_NOVA,
+            GRANDIS_GODDESSS_BLESSING_FLORA,
+            GRANDIS_GODDESSS_BLESSING_ANIMA,
+            OTHERWORLD_GODDESSS_BLESSING,
+//            BLESSING_OF_RECOVERY,
+//            AEGIS_BLESSING,
+//            BLESSING_OF_FORTITUDE,
+//            OTHERWORLDLY_VOID,
+            PRINCESS_SAKUNO_BLESSING
+    };
+
+    private final int[] mapleWarriorSkills = {
+            // adventure
+            BowMaster.MAPLE_WARRIOR_BOW,
+            Marksman.MAPLE_WARRIOR_XBOW,
+            Pathfinder.MAPLE_WARRIOR_PF,
+            Bishop.MAPLE_WARRIOR_BISH,
+            FirePoison.MAPLE_WARRIOR_FP,
+            IceLightning.MAPLE_WARRIOR_IL,
+            Buccaneer.MAPLE_WARRIOR_BUCC,
+            Cannonneer.MAPLE_WARRIOR_CANNON,
+            Corsair.MAPLE_WARRIOR_SAIR,
+            Jett.MAPLE_WARRIOR_JETT,
+            BladeMaster.MAPLE_WARRIOR_DB,
+            NightLord.MAPLE_WARRIOR_NL,
+            Shadower.MAPLE_WARRIOR_SHAD,
+            DarkKnight.MAPLE_WARRIOR_DARK_KNIGHT,
+            Hero.MAPLE_WARRIOR_HERO,
+            Paladin.MAPLE_WARRIOR_PALADIN,
+            // resistance
+            BattleMage.MAPLE_WARRIOR_BAM,
+            Blaster.MAPLE_WARRIOR_BLASTER,
+            net.swordie.ms.client.jobs.resistance.Mechanic.MAPLE_WARRIOR_MECH,
+            WildHunter.MAPLE_WARRIOR_WH,
+            Xenon.MAPLE_WARRIOR_XENON,
+            // legends
+            Aran.MAPLE_WARRIOR_ARAN,
+            Evan.MAPLE_WARRIOR_EVAN,
+            Luminous.MAPLE_WARRIOR_LUMI,
+            Mercedes.MAPLE_WARRIOR_MERC,
+            Phantom.MAPLE_WARRIOR_PH,
+            Shade.MAPLE_WARRIOR_SH,
+            BeastTamer.MAPLE_GUARDIAN,
+
+            BlazeWizard.CALL_OF_CYGNUS_BW,
+            DawnWarrior.CALL_OF_CYGNUS_DW,
+            Mihile.CALL_OF_CYGNUS_MIHILE,
+            NightWalker.CALL_OF_CYGNUS_NW,
+            ThunderBreaker.CALL_OF_CYGNUS_TB,
+            WindArcher.CALL_OF_CYGNUS_WA,
+
+            Hayato.AKATSUKI_HERO_HAYATO,
+            Kanna.AKATSUKI_HERO_KANNA,
+
+            DemonAvenger.MAPLE_WARRIOR_DA,
+            DemonSlayer.MAPLE_WARRIOR_DS,
+            Kinesis.PRESIDENTS_ORDERS,
+
+            AngelicBuster.NOVA_WARRIOR_AB,
+            Cadena.NOVA_WARRIOR_CADENA,
+            Kaiser.NOVA_WARRIOR_KAISER,
+            HoYoung.ANIMA_WARRIOR,
+
+            Adele.HERO_OF_THE_FLORA,
+            Ark.HERO_OF_THE_FLORA,
+            Illium.HERO_OF_THE_FLORA
     };
 
     public ScheduledFuture mpPerSecConsumptionTimer;
@@ -241,17 +348,14 @@ public abstract class Job {
     // Custom Job Advancement
     // Skills that are necessary to be added for certain jobs.
     public static final int[] addedSkills = new int[]{
-
     };
 
     // Quests to be completed for certain jobs.
     public static final int[] questsToComplete = new int[]{
-
     };
 
     // Skills that can be extended with a buff extender
     public static final int[] skillsToExtend = new int[]{
-
     };
 
     public Job(Char chr) {
@@ -282,11 +386,13 @@ public abstract class Job {
         int skillID = 0;
         SkillInfo si = null;
         boolean hasHitMobs = attackInfo.mobAttackInfo.size() > 0;
-        int slv = 0;
+        int skillLevel = 0;
+//        int skillLevelFixed = 0;
         if (skill != null) {
             si = SkillData.getSkillInfoById(skill.getSkillId());
-            slv = (byte) skill.getCurrentLevel();
+//            skillLevelFixed = (byte) skill.getCurrentLevel();
             skillID = skill.getSkillId();
+            skillLevel = chr.getSkillLevel(skillID);
         }
 
         // Recovery Rune  HP Recovery
@@ -307,46 +413,35 @@ public abstract class Job {
         Option o3 = new Option();
         Option o4 = new Option();
         switch (skillID) {
-            case ERDA_SHOWER:
-                chr.reduceSkillCoolTime(skillID, 1000 * attackInfo.mobAttackInfo.size());
-                break;
-            case ERDA_NOVA:
+            case ERDA_SHOWER -> chr.reduceSkillCoolTime(skillID, 1000L * attackInfo.mobAttackInfo.size());
+            case ERDA_NOVA -> {
                 o1.nOption = 1;
                 o1.rOption = skillID;
-                o1.tOption = si.getValue(time, slv);
-                for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
-                    Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
-                    if (mob == null) {
-                        continue;
-                    }
-                    MobTemporaryStat mts = mob.getTemporaryStat();
-                    mts.addStatOptionsAndBroadcast(MobStat.Stun, o1);
-                }
-                break;
-            case MIGHT_OF_THE_NOVA:
+                o1.tOption = si.getValue(time, skillLevel);
+                applyStun(attackInfo, chr, o1);
+            }
+            case MIGHT_OF_THE_NOVA -> {
                 if (tsm.hasStatBySkillId(Bishop.HEAVENS_DOOR)) {
                     return;
                 }
                 si = SkillData.getSkillInfoById(MIGHT_OF_THE_NOVA_BUFF);
                 o1.nOption = 1;
                 o1.rOption = MIGHT_OF_THE_NOVA_BUFF;
-                o1.tOption = si.getValue(time, slv);
+                o1.tOption = si.getValue(time, skillLevel);
                 tsm.putCharacterStatValue(ReviveOnce, o1);
                 tsm.sendSetStatPacket();
-                break;
-            case CONVERSION_OVERDRIVE_ATTACK:
+            }
+            case CONVERSION_OVERDRIVE_ATTACK -> {
                 si = SkillData.getSkillInfoById(CONVERSION_OVERDRIVE);
-                slv = (byte) chr.getSkillLevel(CONVERSION_OVERDRIVE);
-                chr.addSkillCoolTime(CONVERSION_OVERDRIVE_ATTACK, si.getValue(x, slv) * 1000);
-                break;
-
-            case RuneStone.LIBERATE_THE_DESTRUCTIVE_RUNE:
+                final int skillLevelFixed = (byte) chr.getSkillLevel(CONVERSION_OVERDRIVE);
+                chr.addSkillCoolTime(CONVERSION_OVERDRIVE_ATTACK, si.getValue(x, skillLevelFixed) * 1000);
+            }
+            case RuneStone.LIBERATE_THE_DESTRUCTIVE_RUNE -> {
                 // Attack of the Rune
                 AffectedArea aa = AffectedArea.getAffectedArea(chr, attackInfo);
                 aa.setPosition(chr.getPosition());
                 aa.setRect(aa.getPosition().getRectAround(si.getRects().get(0)));
                 chr.getField().spawnAffectedArea(aa);
-
                 skill.setCurrentLevel(1);
                 for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
                     Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
@@ -356,14 +451,24 @@ public abstract class Job {
 
                 // Buff of the Rune
                 si = SkillData.getSkillInfoById(RuneStone.LIBERATE_THE_DESTRUCTIVE_RUNE_BUFF); //Buff Info
-                slv = (byte) skill.getCurrentLevel();
+                final int skillLevelFixed = (byte) skill.getCurrentLevel();
                 o1.nReason = RuneStone.LIBERATE_THE_DESTRUCTIVE_RUNE_BUFF;
-                o1.nValue = si.getValue(indieDamR, slv); //50% DamR
-                o1.tTerm = si.getValue(time, slv);
+                o1.nValue = si.getValue(indieDamR, skillLevelFixed); //50% DamR
+                o1.tTerm = si.getValue(time, skillLevelFixed);
                 tsm.putCharacterStatValue(IndieDamR, o1);
-
                 tsm.sendSetStatPacket();
-                break;
+            }
+        }
+    }
+
+    public static void applyStun(AttackInfo attackInfo, Char chr, Option o1) {
+        for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
+            Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
+            if (mob == null) {
+                continue;
+            }
+            MobTemporaryStat mts = mob.getTemporaryStat();
+            mts.addStatOptionsAndBroadcast(MobStat.Stun, o1);
         }
     }
 
@@ -437,21 +542,14 @@ public abstract class Job {
                 }
                 // TOOD: make sure user owns skill
                 switch (skillID) {
-                    case MONOLITH:
+                    case MONOLITH, FURY_TOTEM -> {
                         summon = Summon.getSummonBy(c.getChr(), skillID, slv);
                         field = c.getChr().getField();
                         summon.setMoveAbility(MoveAbility.Stop);
                         field.spawnSummon(summon);
                         field.setKishin(true);
-                        break;
-                    case FURY_TOTEM:
-                        summon = Summon.getSummonBy(c.getChr(), skillID, slv);
-                        field = c.getChr().getField();
-                        summon.setMoveAbility(MoveAbility.Stop);
-                        field.spawnSummon(summon);
-                        field.setKishin(true);
-                        break;
-                    case SUPER_GM_HASTE:
+                    }
+                    case SUPER_GM_HASTE -> {
                         o1.nOption = 10;
                         o1.rOption = skillID;
                         o1.tOption = si.getValue(time, slv);
@@ -460,8 +558,8 @@ public abstract class Job {
                         o2.rOption = skillID;
                         o2.tOption = si.getValue(time, slv);
                         tsm.putCharacterStatValue(Jump, o2);
-                        break;
-                    case SUPER_GM_BLESS:
+                    }
+                    case SUPER_GM_BLESS -> {
                         o1.nOption = si.getValue(u, slv);
                         o1.rOption = skillID;
                         o1.tOption = si.getValue(time, slv);
@@ -487,65 +585,29 @@ public abstract class Job {
                             o5.tTerm = si.getValue(time, slv);
                             tsm.putCharacterStatValue(IndieBDR, o5);
                         }
-                        break;
-                    case SUPER_GM_HOLY_SYMBOL:
+                    }
+                    case SUPER_GM_HOLY_SYMBOL -> {
                         o1.nOption = 100;
                         o1.rOption = skillID;
                         o1.tOption = si.getValue(time, slv);
                         tsm.putCharacterStatValue(CharacterTemporaryStat.HolySymbol, o1);
-                        break;
-                    case WHITE_ANGELIC_BLESSING:
-                    case WHITE_ANGELIC_BLESSING_2:
-                    case LIGHTNING_GOD_RING:
-                    case LIGHTNING_GOD_RING_2:
-                    case GUARD_RING:
-                    case SUN_RING:
-                    case RAIN_RING:
-                    case RAINBOW_RING:
-                    case SNOW_RING:
-                    case LIGHTNING_RING:
-                    case WIND_RING:
+                    }
+                    case WHITE_ANGELIC_BLESSING, WHITE_ANGELIC_BLESSING_2, LIGHTNING_GOD_RING, LIGHTNING_GOD_RING_2, GUARD_RING, SUN_RING, RAIN_RING, RAINBOW_RING, SNOW_RING, LIGHTNING_RING, WIND_RING -> {
                         summon = Summon.getSummonBy(c.getChr(), skillID, slv);
                         summon.setMoveAction((byte) 4);
                         summon.setAssistType(AssistType.Heal);
                         summon.setFlyMob(true);
                         field.spawnSummon(summon);
-                        break;
-                    case ELEMENTAL_SYLPH:
-                    case FLAME_SYLPH:
-                    case THUNDER_SYLPH:
-                    case ICE_SYLPH:
-                    case EARTH_SYLPH:
-                    case DARK_SYLPH:
-                    case HOLY_SYLPH:
-                    case SALAMANDER_SYLPH:
-                    case ELECTRON_SYLPH:
-                    case UNDINE_SYLPH:
-                    case GNOME_SYLPH:
-                    case DEVIL_SYLPH:
-                    case ANGEL_SYLPH:
-                    case ELEMENTAL_SYLPH_2:
-                    case FLAME_SYLPH_2:
-                    case THUNDER_SYLPH_2:
-                    case ICE_SYLPH_2:
-                    case EARTH_SYLPH_2:
-                    case DARK_SYLPH_2:
-                    case HOLY_SYLPH_2:
-                    case SALAMANDER_SYLPH_2:
-                    case ELECTRON_SYLPH_2:
-                    case UNDINE_SYLPH_2:
-                    case GNOME_SYLPH_2:
-                    case DEVIL_SYLPH_2:
-                    case ANGEL_SYLPH_2:
+                    }
+                    case ELEMENTAL_SYLPH, FLAME_SYLPH, THUNDER_SYLPH, ICE_SYLPH, EARTH_SYLPH, DARK_SYLPH, HOLY_SYLPH, SALAMANDER_SYLPH, ELECTRON_SYLPH, UNDINE_SYLPH, GNOME_SYLPH, DEVIL_SYLPH, ANGEL_SYLPH, ELEMENTAL_SYLPH_2, FLAME_SYLPH_2, THUNDER_SYLPH_2, ICE_SYLPH_2, EARTH_SYLPH_2, DARK_SYLPH_2, HOLY_SYLPH_2, SALAMANDER_SYLPH_2, ELECTRON_SYLPH_2, UNDINE_SYLPH_2, GNOME_SYLPH_2, DEVIL_SYLPH_2, ANGEL_SYLPH_2 -> {
                         summon = Summon.getSummonBy(c.getChr(), skillID, slv);
                         field.spawnSummon(summon);
-                        break;
-
-                    case MAPLE_TREE_OF_PEACE:
+                    }
+                    case MAPLE_TREE_OF_PEACE -> {
                         summon = Summon.getSummonBy(c.getChr(), skillID, slv);
                         summon.setMoveAbility(MoveAbility.Stop);
                         field.spawnSummon(summon);
-                        break;
+                    }
                 }
             }
         }
@@ -595,39 +657,48 @@ public abstract class Job {
         Option o4 = new Option();
         Option o5 = new Option();
         Option o6 = new Option();
-        Summon summon;
-        Field field;
         boolean sendStat = true;
         switch (skillID) {
-            case BOSS_SLAYERS:
+            case MAPLE_WORLD_GODDESSS_BLESSING -> {
+                chr.getTemporaryStatManager().removeStat(IndieStatR, false);
+                final int mapleWarriorSkillId = getMapleWarriorSkillID();
+                final SkillInfo mapleWarriorSkill = SkillData.getSkillInfoById(mapleWarriorSkillId);
+                o1.nReason = skillID;
+                o1.nValue = (int) (mapleWarriorSkill.getValue(x, chr.getSkillLevel(mapleWarriorSkillId)) * si.getValue(x, slv) * 0.01);
+                o1.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieStatR, o1);
+                o2.nReason = skillID;
+                o2.nValue = si.getValue(indieDamR, slv);
+                o2.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieDamR, o2);
+            }
+            case BOSS_SLAYERS -> {
                 o1.nReason = skillID;
                 o1.nValue = si.getValue(indieBDR, slv);
                 o1.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieBDR, o1);
-                break;
-            case UNDETERRED:
+            }
+            case UNDETERRED -> {
                 o1.nReason = skillID;
                 o1.nValue = si.getValue(indieIgnoreMobpdpR, slv);
                 o1.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieIgnoreMobpdpR, o1);
-                break;
-            case FOR_THE_GUILD:
+            }
+            case FOR_THE_GUILD -> {
                 o1.nReason = skillID;
                 o1.nValue = si.getValue(indieDamR, slv);
                 o1.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieDamR, o1);
-                break;
-            case MAPLERUNNER_DASH:
+            }
+            case MAPLERUNNER_DASH -> {
                 o1.nReason = o2.nReason = skillID;
                 o1.tTerm = o2.tTerm = si.getValue(time, slv);
                 o1.nValue = si.getValue(indieForceJump, slv);
                 tsm.putCharacterStatValue(IndieForceJump, o1);
                 o2.nValue = si.getValue(indieForceSpeed, slv);
                 tsm.putCharacterStatValue(IndieForceSpeed, o2);
-                break;
-
-            case DECENT_SHARP_EYES_V:
-                // Short nOption is split in  2 bytes,  first one = CritDmg  second one = Crit%
+            }
+            case DECENT_SHARP_EYES_V -> { // Short nOption is split in  2 bytes,  first one = CritDmg  second one = Crit%
                 int cr = si.getValue(x, slv);
                 int crDmg = si.getValue(y, slv);
                 o1.nOption = (cr << 8) + crDmg;
@@ -636,8 +707,8 @@ public abstract class Job {
                 o1.xOption = cr;
                 o1.yOption = crDmg;
                 tsm.putCharacterStatValue(SharpEyes, o1);
-                break;
-            case DECENT_HYPER_BODY_V:
+            }
+            case DECENT_HYPER_BODY_V -> {
                 o2.nValue = si.getValue(x, slv);
                 o2.nReason = skillID;
                 o2.tTerm = si.getValue(time, slv);
@@ -646,14 +717,14 @@ public abstract class Job {
                 o3.nReason = skillID;
                 o3.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieMMPR, o3);
-                break;
-            case DECENT_COMBAT_ORDERS_V:
+            }
+            case DECENT_COMBAT_ORDERS_V -> {
                 o1.nOption = 1;
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(CombatOrders, o1);
-                break;
-            case DECENT_ADV_BLESSING_V:
+            }
+            case DECENT_ADV_BLESSING_V -> {
                 o1.nOption = si.getValue(z, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
@@ -668,42 +739,41 @@ public abstract class Job {
                 o4.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieMHP, o4);
                 tsm.putCharacterStatValue(IndieMMP, o4);
-                break;
-            case DECENT_SPEED_INFUSION_V:
+            }
+            case DECENT_SPEED_INFUSION_V -> {
                 o1.nReason = skillID;
-                o1.nValue = -1;
+                o1.nValue = -2; // お試し
                 o1.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieBooster, o1);
-                break;
-            case DECENT_HOLY_SYMBOL:
+            }
+            case DECENT_HOLY_SYMBOL -> {
                 o1.nOption = si.getValue(x, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(HolySymbol, o1);
-                break;
-
-            case LUCKY_DICE:
+                o2.nOption = si.getValue(v, slv);
+                o2.rOption = skillID;
+                o2.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(DropRate, o1);
+            }
+            case LUCKY_DICE -> {
                 if (chr.getQuestManager().getQuestById(GameConstants.LOADED_DICE_SELECTION) == null) {
                     chr.getScriptManager().createQuestWithQRValue(GameConstants.LOADED_DICE_SELECTION, "1");
                 }
                 int diceThrow1 = Integer.parseInt(chr.getScriptManager().getQRValue(GameConstants.LOADED_DICE_SELECTION));
-
                 chr.write(UserPacket.effect(Effect.skillAffectedSelect(skillID, slv, diceThrow1, false)));
                 chr.getField().broadcastPacket(UserRemote.effect(chr.getId(), Effect.skillAffectedSelect(skillID, slv, diceThrow1, false)));
-
                 if (diceThrow1 < 2) {
                     chr.reduceSkillCoolTime(skillID, (1000 * si.getValue(cooltime, slv)) / 2);
                     return;
                 }
-
                 o1.nOption = diceThrow1;
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
-
                 tsm.throwDice(diceThrow1);
                 tsm.putCharacterStatValue(Dice, o1);
-                break;
-            case MANA_OVERLOAD:
+            }
+            case MANA_OVERLOAD -> {
                 if (tsm.hasStat(ManaOverload)) {
                     tsm.removeStatsBySkill(MANA_OVERLOAD);
                 } else {
@@ -714,8 +784,8 @@ public abstract class Job {
                     o2.nValue = si.getValue(z, slv);
                     tsm.putCharacterStatValue(IndiePMdR, o2);
                 }
-                break;
-            case GUIDED_ARROW:
+            }
+            case GUIDED_ARROW -> {
                 int faKey = chr.getNewForceAtomKey();
                 o1.nOption = si.getValue(z, slv);
                 o1.rOption = skillID;
@@ -723,7 +793,6 @@ public abstract class Job {
                 o1.xOption = faKey;
                 tsm.putCharacterStatValue(GuidedArrow, o1);
                 tsm.sendSetStatPacket();
-
                 ForceAtomEnum fae = ForceAtomEnum.GUIDED_ARROW;
                 ForceAtomInfo forceAtomInfo = new ForceAtomInfo(faKey, fae.getInc(), 41, 3,
                         90, 840, Util.getCurrentTime(), 0, 0,
@@ -733,23 +802,23 @@ public abstract class Job {
                         new Position(), skillID, new Position(), 0);
                 fa.setMaxRecreationCount(si.getValue(z, slv));
                 chr.createForceAtom(fa);
-                break;
-            case ETHEREAL_FORM:
+            }
+            case ETHEREAL_FORM -> {
                 o1.nOption = si.getValue(x, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 o1.xOption = si.getValue(s, slv); // RGB
                 o1.yOption = si.getValue(y, slv);
                 tsm.putCharacterStatValue(EtherealForm, o1);
-                break;
-            case WILL_OF_ERDA:
+            }
+            case WILL_OF_ERDA -> {
                 o1.nOption = 100;
                 o1.rOption = skillID;
                 o1.tOption = 3;
                 tsm.putCharacterStatValue(AsrR, o1);
                 tsm.removeAllDebuffs();
-                break;
-            case IMPENETRABLE_SKIN:
+            }
+            case IMPENETRABLE_SKIN -> {
                 o1.nOption = 1;
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
@@ -763,8 +832,8 @@ public abstract class Job {
                 o3.nValue = 100;
                 o3.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieNoKnockBack, o3);
-                break;
-            case WEAPON_AURA:
+            }
+            case WEAPON_AURA -> {
                 o1.nOption = si.getValue(z, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
@@ -777,13 +846,13 @@ public abstract class Job {
                 o3.nReason = skillID;
                 o3.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndiePMdR, o3);
-                break;
-            case LAST_RESORT:
+            }
+            case LAST_RESORT -> {
                 int nOption = tsm.hasStat(LastResort) ? tsm.getOption(LastResort).nOption : 0;
                 long remainingTime = tsm.getRemainingTime(LastResort, LAST_RESORT);
                 tsm.removeStatsBySkill(LAST_RESORT);
                 switch (nOption) {
-                    case 0:
+                    case 0 -> {
                         o1.nOption = 1;
                         o1.rOption = skillID;
                         o1.tOption = si.getValue(time, slv);
@@ -800,8 +869,8 @@ public abstract class Job {
                         o4.nValue = si.getValue(y, slv);
                         o4.tTerm = si.getValue(time, slv);
                         tsm.putCharacterStatValue(IndiePMdR, o4);
-                        break;
-                    case 1:
+                    }
+                    case 1 -> {
                         o1.nOption = 2;
                         o1.rOption = skillID;
                         o1.tOption = (int) ((remainingTime) / 2);
@@ -822,58 +891,50 @@ public abstract class Job {
                         o4.tTerm = (int) ((remainingTime) / 2);
                         o4.setInMillis(true);
                         tsm.putCharacterStatValue(IndiePMdR, o4);
-                        break;
+                    }
                 }
-                break;
-            case VICIOUS_SHOT:
+            }
+            case VICIOUS_SHOT -> {
                 o1.nOption = si.getValue(x, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(ViciousShot, o1);
-                break;
-            case OVERDRIVE:
+            }
+            case OVERDRIVE -> {
                 o1.nOption = si.getValue(x, slv);
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(Overdrive, o1);
-                break;
-
-            case RESISTANCE_INFANTRY_1:
-            case RESISTANCE_INFANTRY_2:
-                summon = Summon.getSummonBy(chr, skillID, slv);
-                field = chr.getField();
+            }
+            case RESISTANCE_INFANTRY_1, RESISTANCE_INFANTRY_2 -> {
+                Summon summon = Summon.getSummonBy(chr, skillID, slv);
+                Field field = chr.getField();
                 summon.setMoveAbility(MoveAbility.Stop);
                 field.spawnSummon(summon);
-                break;
-
+            }
             //Fall through intended for all Freuds Wisdom Skill cases
-            case FREUDS_WISDOM_6:
+            case FREUDS_WISDOM_6 -> {
                 o1.nOption = 1;
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(NotDamaged, o1);
-            case FREUDS_WISDOM_5:
                 o2.nReason = skillID;
                 o2.nValue = si.getValue(indieBDR, slv);
                 o2.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieBDR, o2);
-            case FREUDS_WISDOM_4:
                 o3.nReason = skillID;
                 o3.nValue = si.getValue(indiePad, slv);
                 o3.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndiePAD, o3);
                 tsm.putCharacterStatValue(IndieMAD, o3);
-            case FREUDS_WISDOM_3:
                 o4.nReason = skillID;
                 o4.nValue = si.getValue(indieAllStat, slv);
                 o4.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieAllStat, o4);
-            case FREUDS_WISDOM_2:
                 o5.nReason = skillID;
                 o5.nValue = si.getValue(indieStance, slv);
                 o5.tTerm = si.getValue(time, slv);
                 tsm.putCharacterStatValue(IndieStance, o5);
-            case FREUDS_WISDOM_1:
                 for (int skillId : chr.getSkillCoolTimes().keySet()) {
                     if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
                         chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
@@ -885,22 +946,158 @@ public abstract class Job {
                 tsm.putCharacterStatValue(FreudBlessing, o6);
 
                 int cooldown = 25000; // in ms
+
                 if (skillID == FREUDS_WISDOM_6) {
                     cooldown = 240000;
                 }
                 chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
-                break;
-            case SENGOKU_FORCE_ASSEMBLE:
-                summonSengokuForces();
-                break;
-            case CONVERSION_OVERDRIVE:
+
+            }
+            case FREUDS_WISDOM_5 -> {
+                o2.nReason = skillID;
+                o2.nValue = si.getValue(indieBDR, slv);
+                o2.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieBDR, o2);
+                o3.nReason = skillID;
+                o3.nValue = si.getValue(indiePad, slv);
+                o3.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndiePAD, o3);
+                tsm.putCharacterStatValue(IndieMAD, o3);
+                o4.nReason = skillID;
+                o4.nValue = si.getValue(indieAllStat, slv);
+                o4.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieAllStat, o4);
+                o5.nReason = skillID;
+                o5.nValue = si.getValue(indieStance, slv);
+                o5.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieStance, o5);
+                for (int skillId : chr.getSkillCoolTimes().keySet()) {
+                    if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
+                        chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
+                    }
+                }
+                o6.nOption = tsm.hasStat(FreudBlessing) ? tsm.getOption(FreudBlessing).nOption + 1 : 1;
+                o6.rOption = skillID;
+                o6.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(FreudBlessing, o6);
+
+                int cooldown = 25000; // in ms
+
+                if (skillID == FREUDS_WISDOM_6) {
+                    cooldown = 240000;
+                }
+                chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
+
+            }
+            case FREUDS_WISDOM_4 -> {
+                o3.nReason = skillID;
+                o3.nValue = si.getValue(indiePad, slv);
+                o3.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndiePAD, o3);
+                tsm.putCharacterStatValue(IndieMAD, o3);
+                o4.nReason = skillID;
+                o4.nValue = si.getValue(indieAllStat, slv);
+                o4.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieAllStat, o4);
+                o5.nReason = skillID;
+                o5.nValue = si.getValue(indieStance, slv);
+                o5.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieStance, o5);
+                for (int skillId : chr.getSkillCoolTimes().keySet()) {
+                    if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
+                        chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
+                    }
+                }
+                o6.nOption = tsm.hasStat(FreudBlessing) ? tsm.getOption(FreudBlessing).nOption + 1 : 1;
+                o6.rOption = skillID;
+                o6.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(FreudBlessing, o6);
+
+                int cooldown = 25000; // in ms
+
+                if (skillID == FREUDS_WISDOM_6) {
+                    cooldown = 240000;
+                }
+                chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
+
+            }
+            case FREUDS_WISDOM_3 -> {
+                o4.nReason = skillID;
+                o4.nValue = si.getValue(indieAllStat, slv);
+                o4.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieAllStat, o4);
+                o5.nReason = skillID;
+                o5.nValue = si.getValue(indieStance, slv);
+                o5.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieStance, o5);
+                for (int skillId : chr.getSkillCoolTimes().keySet()) {
+                    if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
+                        chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
+                    }
+                }
+                o6.nOption = tsm.hasStat(FreudBlessing) ? tsm.getOption(FreudBlessing).nOption + 1 : 1;
+                o6.rOption = skillID;
+                o6.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(FreudBlessing, o6);
+
+                int cooldown = 25000; // in ms
+
+                if (skillID == FREUDS_WISDOM_6) {
+                    cooldown = 240000;
+                }
+                chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
+
+            }
+            case FREUDS_WISDOM_2 -> {
+                o5.nReason = skillID;
+                o5.nValue = si.getValue(indieStance, slv);
+                o5.tTerm = si.getValue(time, slv);
+                tsm.putCharacterStatValue(IndieStance, o5);
+                for (int skillId : chr.getSkillCoolTimes().keySet()) {
+                    if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
+                        chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
+                    }
+                }
+                o6.nOption = tsm.hasStat(FreudBlessing) ? tsm.getOption(FreudBlessing).nOption + 1 : 1;
+                o6.rOption = skillID;
+                o6.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(FreudBlessing, o6);
+
+                int cooldown = 25000; // in ms
+
+                if (skillID == FREUDS_WISDOM_6) {
+                    cooldown = 240000;
+                }
+                chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
+
+            }
+            case FREUDS_WISDOM_1 -> {
+                for (int skillId : chr.getSkillCoolTimes().keySet()) {
+                    if (SkillData.getSkillInfoById(skillId) != null && !SkillData.getSkillInfoById(skillId).isNotCooltimeReset()) {
+                        chr.reduceSkillCoolTime(skillId, (long) (chr.getRemainingCoolTime(skillId) * 0.1F));
+                    }
+                }
+                o6.nOption = tsm.hasStat(FreudBlessing) ? tsm.getOption(FreudBlessing).nOption + 1 : 1;
+                o6.rOption = skillID;
+                o6.tOption = si.getValue(time, slv);
+                tsm.putCharacterStatValue(FreudBlessing, o6);
+
+                int cooldown = 25000; // in ms
+
+                if (skillID == FREUDS_WISDOM_6) {
+                    cooldown = 240000;
+                }
+                chr.addSkillCoolTime(FREUDS_WISDOM, Util.getCurrentTimeLong() + cooldown); // value isn't included in SkillId
+
+            }
+            case SENGOKU_FORCE_ASSEMBLE -> summonSengokuForces();
+            case CONVERSION_OVERDRIVE -> {
                 o1.nOption = 1;
                 o1.rOption = skillID;
                 o1.tOption = si.getValue(time, slv);
                 tsm.putCharacterStatValue(ConversionOverdrive, o1);
-                break;
-            default:
-                sendStat = false;
+            }
+            default -> sendStat = false;
         }
         if (sendStat) {
             tsm.sendSetStatPacket();
@@ -1463,7 +1660,6 @@ public abstract class Job {
     public abstract int getFinalAttackSkill();
 
 
-
     public void handleTideOfBattle(Position old, Position New) {
         int skillID = chr.hasSkill(80000268) ? 80000268 : 150000017;
         Skill skill = chr.getSkill(skillID);
@@ -1496,7 +1692,6 @@ public abstract class Job {
         tsm.putCharacterStatValue(CharacterTemporaryStat.IndieDamR, o2);
         tsm.sendSetStatPacket();
     }
-
 
 
     /**
@@ -1577,21 +1772,21 @@ public abstract class Job {
         boolean jobAdvance = false;
         String message = "";
         switch (level) {
-            case 10:
+            case 10 -> {
                 message += "#b[Level 10] 1st Job Advancement#k\r\n\r\n";
                 message += "You've reached level 10, and are ready for your #b[1st Job Advancement]#k!\r\n\r\n";
                 message += "Complete the #r[Job Advancement]#k quest and unlock your 1st job advancement!\r\n";
                 jobAdvance = true;
-                break;
-            case 20:
+            }
+            case 20 -> {
                 if (chr.getJob() == JobConstants.JobEnum.THIEF.getJobId() && chr.getSubJob() == 1) { // dual blade
                     message += "#b[Level 20] 1.5th Job Advancement#k\r\n\r\n";
                     message += "Congratulations on reaching level 20!#k\r\n\r\n";
                     message += "You've unlocked your next job advancement!\r\n\r\n";
                     jobAdvance = true;
                 }
-                break;
-            case 30: {
+            }
+            case 30 -> {
                 message += "#b[Level 30] 2nd Job Advancement#k\r\n\r\n";
                 message += "Congratulations on reaching level 30!#k\r\n\r\n";
                 message += "You've unlocked your next job advancement!\r\n\r\n";
@@ -1636,12 +1831,11 @@ public abstract class Job {
                 chr.chatMessage("Character potential unlocked.");
                 chr.getQuestManager().completeQuest(12396);
                 chr.addHonorExp(1000);
-                chr.addHotTimeReward(2435851, HotTimeRewardType.GAME_ITEM, 1, 0, 0, 0,"Gift for reaching level 30."); // Pearl Weapon
-                chr.addHotTimeReward(2438907, HotTimeRewardType.GAME_ITEM, 1, 0,0,0,"Gift for reaching level 30."); // Pearl Armor
+                chr.addHotTimeReward(2435851, HotTimeRewardType.GAME_ITEM, 1, 0, 0, 0, "Gift for reaching level 30."); // Pearl Weapon
+                chr.addHotTimeReward(2438907, HotTimeRewardType.GAME_ITEM, 1, 0, 0, 0, "Gift for reaching level 30."); // Pearl Armor
                 jobAdvance = true;
-                break;
             }
-            case 60: {
+            case 60 -> {
                 message += "#b[Level 60] 3rd Job Advancement#k\r\n\r\n";
                 message += "Congratulations on reaching level 60!#k\r\n\r\n";
                 message += "You've unlocked your next job advancement!\r\n\r\n";
@@ -1655,9 +1849,8 @@ public abstract class Job {
                 }
                 chr.addSpToJobByCurrentJob(10);
                 jobAdvance = true;
-                break;
             }
-            case 100: {
+            case 100 -> {
                 message += "#b[Level 100] 4th Job Advancement#k\r\n\r\n";
                 message += "Congratulations on reaching level 100!#k\r\n\r\n";
                 message += "You've unlocked your next job advancement!\r\n\r\n";
@@ -1671,31 +1864,21 @@ public abstract class Job {
                     handleJobAdvance(nextJobId);
                 }
                 chr.addSpToJobByCurrentJob(3);
-                chr.addHotTimeReward(2433444, HotTimeRewardType.GAME_ITEM, 1, 0,  0, 0,"Gift for reaching level 100."); // Legendary Cryptic Chest
+                chr.addHotTimeReward(2433444, HotTimeRewardType.GAME_ITEM, 1, 0, 0, 0, "Gift for reaching level 100."); // Legendary Cryptic Chest
                 jobAdvance = true;
-                break;
             }
-            case 200: {
+            case 200 -> {
                 message += "#b[Level 200] V Matrix Unlocked#k\r\n\r\n";
                 message += "Congratulations on reaching level 200!#k\r\n\r\n";
                 message += "You've unlocked the V Matrix!\r\n\r\n";
                 message += "I've given you some Nodestones to help you on your adventure!\r\n\r\n";
                 chr.getQuestManager().completeQuest(QuestConstants.FIFTH_JOB_QUEST);
-                chr.addHotTimeReward(2435902, HotTimeRewardType.GAME_ITEM, 100, 0, 0,0,"Gift for reaching level 200."); // Nodestones
+                chr.addHotTimeReward(2435902, HotTimeRewardType.GAME_ITEM, 100, 0, 0, 0, "Gift for reaching level 200."); // Nodestones
                 jobAdvance = true;
-                break;
             }
-                /* OLD EXAMPLE MESSAGE
-                String message = "#b[Guide] 2nd Job Advancement#k\r\n\r\n";
-                message += "You've reached level 30, and are ready for your #b[2nd Job Advancement]#k!\r\n\r\n";
-                message += "Complete the #r[Job Advancement]#k quest to unlock your 2nd job advancement!\r\n";
-                chr.write(UserLocal.addPopupSay(9010000, 6000, message, "FarmSE.img/boxResult"));
-
-                message = "#b[Guide] Ability#k\r\n\r\n";
-                message += "You've reached level 30 and can now unlock #b[Abilities]#k!\r\n\r\n";
-                message += "Accept the quest #bFirst Ability - The Eye Opener#k from the Quest Notifier!\r\n";
-                chr.write(UserLocal.addPopupSay(9010000, 6000, message, "FarmSE.img/boxResult"));
-                */
+            case 225 -> {
+                chr.getQuestManager().completeQuest(34478);
+            }
         }
 
         if (jobAdvance && (JobConstants.isExplorer(chr.getJob())) || JobConstants.isCygnusKnight(chr.getJob())) {
@@ -1862,5 +2045,9 @@ public abstract class Job {
         chr.addItemToInventory(hyperTp);
         Item frenzyTotem = ItemData.getItemDeepCopy(1202236);
         chr.addItemToInventory(frenzyTotem);
+    }
+
+    public int getMapleWarriorSkillID() {
+        return 0;
     }
 }

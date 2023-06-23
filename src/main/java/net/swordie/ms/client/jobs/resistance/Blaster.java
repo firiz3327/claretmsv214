@@ -633,4 +633,9 @@ public class Blaster extends Citizen {
 
         reloadCylinder();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_BLASTER;
+    }
 }

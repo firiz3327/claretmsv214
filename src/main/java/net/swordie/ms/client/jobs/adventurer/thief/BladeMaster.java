@@ -359,4 +359,9 @@ public class BladeMaster extends Thief {
         chr.addItemToInventory(ItemData.getItemDeepCopy(1332063)); // dagger
         chr.addItemToInventory(ItemData.getItemDeepCopy(1342000)); // katara
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_DB;
+    }
 }

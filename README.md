@@ -1,3 +1,53 @@
+# forked https://github.com/CoREse/gms214server
+
+Job change:
+- Adventure
+  - [x] MAPLE_WORLD_GODDESSS_BLESSING の処理実装 バフの計算式合ってるか分からんけどたぶんOK?
+- Hero
+  - [x] Worldreaverの敵死亡時エフェクトがcrashするので、処理を少し変更
+  - [x] BurningSoulBladeでクールタイムが発生しない問題の修正
+- Paladin
+  - [ ] くるくるハンマーが1個しかないのを修正
+- Kanna
+  - [x] Kishinで敵モブが増加しないように変更
+
+Current fixes and changes:
+- V matrix
+  - [x] V matrixの表示がおかしい問題の修正
+  - [x] Slot Enhanceの実装
+  - [x] その他細かい修正
+  - [ ] Node Stone クラフトNPCの修正
+- ベルルム戦
+  - [x] ベルルムの尻尾をいい感じにスポーン・デスさせる処理の実装
+  - [ ] 落石
+  - [ ] ベルルムの尻尾がベルルム本体と共有されていない問題の対応
+- マグナス戦
+  - [x] マグナスの隕石処理を修正
+  - [x] マグナスのバリアの修正
+  - [x] バリア範囲内でダメージが通常通り通らない問題の暫定対応
+    - バリア範囲内で Final Damage が 1000% 上昇するバフを付与
+    - 範囲外では、0.25秒ごとに最大HP 1%分のダメージ
+  - [ ] 範囲スタンをばらまくのミドリのやつ をどうするか
+- スウ戦
+  - [ ] rotatecameraコマンドのような回転を使う
+  - [ ] レーザー
+- NPC
+  - [ ] キュービングNPCの作成
+  - [ ] NX NPCショップの作成
+- Home
+  - 向き先はジパング 800000000 
+  - [ ] homeコマンドの作成
+  - 
+- その他
+  - [x] Reactorのidkがうまく処理できずに、RootAbyssでボスがうまく動かせない問題の暫定対応
+  - [x] 5次スキルのErda Novaで無限スタンが発生する問題の修正
+  - [x] Nebulite 修正
+  - [ ] Lv.225でクエスト 34478 を自動クリアするように変更
+    - Arcaneシンボルの装備スロット数増加クエスト
+
+メモ
+SpellTrace: 4001832
+
 # A server emulator for Maplestory GMS v214.
 
 Acquired from https://forum.ragezone.com/f427/java-v214-swordie-source-1209447/

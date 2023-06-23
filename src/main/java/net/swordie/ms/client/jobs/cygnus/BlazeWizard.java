@@ -575,4 +575,9 @@ public class BlazeWizard extends Noblesse {
         Item beginnerStaff = ItemData.getItemDeepCopy(1382100);
         chr.addItemToInventory(beginnerStaff);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_BW;
+    }
 }

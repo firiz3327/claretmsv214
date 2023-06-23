@@ -1,7 +1,7 @@
 package net.swordie.ms.loaders;
 
-import net.swordie.ms.Server;
 import net.swordie.ms.ServerConstants;
+import net.swordie.ms.claretms.ClaretMSConstants;
 import net.swordie.ms.client.character.items.*;
 import net.swordie.ms.connection.db.DatabaseManager;
 import net.swordie.ms.constants.GameConstants;
@@ -79,6 +79,10 @@ public class ItemData {
             }
             if (ItemConstants.isArcaneSymbol(ret.getItemId())) {
                 ret.initSymbolStats((short) 1, job);
+            }
+            if (ClaretMSConstants.AUTO_GOLDEN_HAMMER) {
+                ret.addStat(EquipBaseStat.iuc, 2); // +2 hammer used
+                ret.addStat(EquipBaseStat.tuc, 2); // +2 upgrades available
             }
         }
         return ret;
@@ -1338,11 +1342,26 @@ public class ItemData {
                         for (Node socketNode : XMLApi.getAllChildren(socket)) {
                             String name = XMLApi.getNamedAttribute(socketNode, "name");
                             String value = XMLApi.getNamedAttribute(socketNode, "value");
-                            switch (name) {
-                                case "optionType":
-                                    item.putScrollStat(optionType, Integer.parseInt(value));
-                                    break;
+                            if (name.equals("optionType")) {
+                                item.putScrollStat(optionType, Integer.parseInt(value));
                             }
+                        }
+                        Node option = XMLApi.getFirstChildByNameBF(socket, "option");
+                        Node o = XMLApi.getFirstChildByNameBF(option, "0");
+                        Node optionString = XMLApi.getFirstChildByNameDF(o, "optionString");
+                        String ssName = "";
+                        if (XMLApi.getNamedAttribute(optionString, "value") != null) {
+                            ssName = XMLApi.getNamedAttribute(optionString, "value");
+                        }
+                        Node level = XMLApi.getFirstChildByNameDF(o, "level");
+                        int ssVal = 0;
+                        if (XMLApi.getNamedAttribute(level, "value") != null) {
+                            ssVal = Integer.parseInt(XMLApi.getNamedAttribute(level, "value"));
+                        }
+                        if(ScrollStat.getScrollStatByString(ssName) != null) {
+                            item.putScrollStat(ScrollStat.valueOf(ssName), ssVal);
+                        } else {
+                            log.info("non existent scroll stat: " + ssName);
                         }
                     }
                     Node spec = XMLApi.getFirstChildByNameBF(mainNode, "spec");

@@ -157,7 +157,7 @@ public class Server extends Properties {
 		String timeMsg = time + (!isShutdownFromCommand() ? " seconds." :" minutes. ");
 		String end = "Please log off safely before the server shuts down.";
 		getWorldById(1).broadcastPacket(UserLocal.chatMsg(ChatType.Notice2, "[Notice] " + msg + timeMsg + end));
-		getWorldById(1).broadcastPacket(UserLocal.addPopupSay(9010063, 10000,
+		getWorldById(1).broadcastPacket(UserLocal.addPopupSay(3001652, 10000,
 				"#e#b[Notice]#k#n " + msg + "#e#r" + timeMsg + "#k#n" + end, "FarmSE.img/boxResult"));
 		ServerConfig.SERVER_MSG = msg + timeMsg + end;
 		getWorldById(1).broadcastPacket(WvsContext.broadcastMsg(BroadcastMsg.slideNotice(ServerConfig.SERVER_MSG, true)));
@@ -250,19 +250,19 @@ public class Server extends Properties {
 
 	public class ShutDownTask {
 
-		private static final int shutdownTime = 30000; // 30 secs
-
 		public void start() {
 			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
 
 				log.info("Shutting down sever...");
 				Server.getInstance().setOnline(false);
 				if (!isShutdownFromCommand()) {
+					final int serverDownTimeSec = GameConstants.SERVER_DOWN_TIME / 1000;
 					// broadcast message if manually shutting down...
-					sendShutdownMessage(shutdownTime / 1000);
+					log.info("Wait Shutdown Time: " + serverDownTimeSec + " sec");
+					sendShutdownMessage(serverDownTimeSec);
 					// wait for manual shut down time (shutdownTime)...
 					try {
-						Thread.sleep(shutdownTime);
+						Thread.sleep(GameConstants.SERVER_DOWN_TIME);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}

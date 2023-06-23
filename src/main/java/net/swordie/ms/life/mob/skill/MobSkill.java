@@ -283,6 +283,7 @@ public class MobSkill {
         short slv = (short) getLevel();
         MobSkillInfo msi = SkillData.getMobSkillInfoByIdAndLevel(skill, slv);
         MobSkillID msID = MobSkillID.getMobSkillIDByVal(skill);
+        log.info("mobSkill: " + skill + ", Lv: " + slv + ", msID: " + msID);
         Field field = mob.getField();
         Option o = new Option(skill);
         o.slv = slv;

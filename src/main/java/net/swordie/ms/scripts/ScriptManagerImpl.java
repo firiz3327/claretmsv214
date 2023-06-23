@@ -1,6 +1,5 @@
 package net.swordie.ms.scripts;
 
-import net.swordie.ms.Server;
 import net.swordie.ms.ServerConfig;
 import net.swordie.ms.ServerConstants;
 import net.swordie.ms.client.Account;
@@ -52,10 +51,7 @@ import net.swordie.ms.loaders.*;
 import net.swordie.ms.loaders.containerclasses.Cosmetic;
 import net.swordie.ms.loaders.containerclasses.VCoreInfo;
 import net.swordie.ms.loaders.containerclasses.ItemInfo;
-import net.swordie.ms.util.FileTime;
-import net.swordie.ms.util.Position;
-import net.swordie.ms.util.Rect;
-import net.swordie.ms.util.Util;
+import net.swordie.ms.util.*;
 import net.swordie.ms.util.container.Tuple;
 import net.swordie.ms.world.World;
 import net.swordie.ms.world.field.*;
@@ -80,7 +76,6 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
@@ -89,7 +84,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
-import static net.swordie.ms.client.character.skills.temp.CharacterTemporaryStat.RideVehicle;
+import static net.swordie.ms.client.character.skills.temp.CharacterTemporaryStat.*;
 import static net.swordie.ms.enums.ChatType.*;
 import static net.swordie.ms.life.npc.NpcMessageType.*;
 
@@ -448,6 +443,15 @@ public class ScriptManagerImpl implements ScriptManager {
         return sendGeneralSay(text, Say);
     }
 
+    public int sendSayIllustration(String text, int faceIndex, boolean isLeft) {
+        if (getLastActiveScriptType() == ScriptType.None) {
+            return 0;
+        }
+        getNpcScriptInfo().setFaceIndex(faceIndex);
+        getNpcScriptInfo().setLeft(isLeft);
+        return sendGeneralSay(text, SayIllustration);
+    }
+
     /**
      * Helper function that ensures that selections have the appropriate type (AskMenu).
      *
@@ -738,6 +742,10 @@ public class ScriptManagerImpl implements ScriptManager {
         Map<Stat, Object> stats = new HashMap<>();
         stats.put(Stat.job, jobID);
         chr.getClient().write(WvsContext.statChanged(stats, chr.getSubJob()));
+    }
+
+    public int getNX() {
+        return chr.getUser().getNxPrepaid();
     }
 
     public int getVotePoints() {
@@ -1169,6 +1177,10 @@ public class ScriptManagerImpl implements ScriptManager {
         warpInstance(id, true, 0, partyAllowed);
     }
 
+    public void warpInstanceOutParty(int id) {
+        warpInstanceOut(id);
+    }
+
     @Override
     public void warpInstanceOut(int id) {
         warpInstance(id, false, 0, false);
@@ -1564,6 +1576,12 @@ public class ScriptManagerImpl implements ScriptManager {
     }
 
     @Override
+    public void openNpc(int npcId, String script) {
+        Npc npc = NpcData.getNpcDeepCopyById(npcId);
+        chr.getScriptManager().startScript(npc.getTemplateId(), npcId, script, ScriptType.Npc);
+    }
+
+    @Override
     public void openShop(int shopID) {
         NpcShopDlg nsd = NpcData.getShopById(shopID);
         if (nsd != null) {
@@ -1735,44 +1753,44 @@ public class ScriptManagerImpl implements ScriptManager {
 
     // Mob methods
     @Override
-    public void spawnMob(int id) {
-        spawnMob(id, 0, 0, false);
+    public Mob spawnMob(int id) {
+        return spawnMob(id, 0, 0, false);
     }
 
     @Override
-    public void spawnMob(int id, boolean respawnable) {
-        spawnMob(id, 0, 0, respawnable);
+    public Mob spawnMob(int id, boolean respawnable) {
+        return spawnMob(id, 0, 0, respawnable);
     }
 
     @Override
-    public void spawnMobOnChar(int id) {
-        spawnMob(id, chr.getPosition().getX(), chr.getPosition().getY(), false);
+    public Mob spawnMobOnChar(int id) {
+        return spawnMob(id, chr.getPosition().getX(), chr.getPosition().getY(), false);
     }
 
     @Override
-    public void spawnMobOnChar(int id, boolean respawnable) {
-        spawnMob(id, chr.getPosition().getX(), chr.getPosition().getY(), respawnable);
+    public Mob spawnMobOnChar(int id, boolean respawnable) {
+        return spawnMob(id, chr.getPosition().getX(), chr.getPosition().getY(), respawnable);
     }
 
     @Override
-    public void spawnMob(int id, int x, int y, boolean respawnable) {
-        spawnMob(id, x, y, respawnable, 0);
+    public Mob spawnMob(int id, int x, int y, boolean respawnable) {
+        return spawnMob(id, x, y, respawnable, 0);
     }
 
-    public void spawnMob(int id, int x, int y) {
-        spawnMob(id, x, y, false, 0);
+    public Mob spawnMob(int id, int x, int y) {
+        return spawnMob(id, x, y, false, 0);
     }
 
-    public void spawnMob(int id, int x, int y, long hp) {
-        spawnMob(id, x, y, false, hp);
+    public Mob spawnMob(int id, int x, int y, long hp) {
+        return spawnMob(id, x, y, false, hp);
     }
 
-    public void spawnMob(int id, int x, int y, boolean respawnable, long hp) {
-        chr.getField().spawnMob(id, x, y, respawnable, hp);
+    public Mob spawnMob(int id, int x, int y, boolean respawnable, long hp) {
+        return chr.getField().spawnMob(id, x, y, respawnable, hp);
     }
 
-    public void spawnMobWithAppearType(int id, int x, int y, int appearType, int option) {
-        chr.getField().spawnMobWithAppearType(id, x, y, appearType, option);
+    public Mob spawnMobWithAppearType(int id, int x, int y, int appearType, int option) {
+        return chr.getField().spawnMobWithAppearType(id, x, y, appearType, option);
     }
 
     @Override
@@ -2094,10 +2112,11 @@ public class ScriptManagerImpl implements ScriptManager {
 
     /**
      * Give an item which has the expiration time
+     *
      * @param id
-     * @param quantity for stackable items
+     * @param quantity  for stackable items
      * @param fixedDate
-     * @param value if fixedDate is false, set expiration time in minutes, if true, set expiration date in yyyyMMddHHmm or yyyyMMddHH, yyyyMMdd format (eg. 202002011200)
+     * @param value     if fixedDate is false, set expiration time in minutes, if true, set expiration date in yyyyMMddHHmm or yyyyMMddHH, yyyyMMdd format (eg. 202002011200)
      */
     public void giveItemWithExpireDate(int id, int quantity, boolean fixedDate, Object value) {
         Item item = ItemData.getItemDeepCopy(id);
@@ -2488,6 +2507,10 @@ public class ScriptManagerImpl implements ScriptManager {
 
     @Override
     public void createObstacleAtom(ObtacleAtomEnum oae, int key, int damage, int velocity, int angle, int amount, int proc) {
+        createObstacleAtom(oae, key, damage, velocity, velocity, 0, amount, proc);
+    }
+
+    public void createObstacleAtom(ObtacleAtomEnum oae, int key, int damage, int velocityMin, int velocityMax, int angle, int amount, int proc) {
         Field field = chr.getField();
         int xLeft = field.getVrLeft();
         int yTop = field.getVrTop();
@@ -2507,7 +2530,7 @@ public class ScriptManagerImpl implements ScriptManager {
                     height = height < 0 ? -height : height;
 
                     obtacleAtomInfosSet.add(new ObtacleAtomInfo(oae.getType(), key, position, new Position(), oae.getHitBox(),
-                            damage, 0, 0, height, 0, velocity, height, angle));
+                            damage, 0, 0, height, 0, velocityMin == velocityMax ? velocityMax : rand(velocityMin, velocityMax), height, angle));
                 }
             }
         }
@@ -2855,10 +2878,10 @@ public class ScriptManagerImpl implements ScriptManager {
             chr.consumeItem(itemID, 1);
             DamageSkinSaveData dssd = DamageSkinSaveData.getByItemID(itemID);
             q.setQrValue(String.valueOf(dssd.getDamageSkinID()));
-            acc.addDamageSkin(dssd);
+//            acc.addDamageSkin(dssd); // こいつと↓のやつはキャラクター詳細画面を開くとクラッシュするので、ダメージスキンが蓄積されても変更できない
             chr.setDamageSkin(dssd);
-            chr.write(UserLocal.damageSkinSaveResult(DamageSkinType.Req_Reg,
-                    DamageSkinType.Res_Success, chr));
+//            chr.write(UserLocal.damageSkinSaveResult(DamageSkinType.Req_Reg,
+//                    DamageSkinType.Res_Success, chr));
             chr.write(UserPacket.setDamageSkin(chr));
             chr.write(WvsContext.questRecordMessage(q));
         }
@@ -3123,7 +3146,7 @@ public class ScriptManagerImpl implements ScriptManager {
             mr.setSkillID1(400001000);
             chr.getMatrixRecords().add(mr);
             chr.write(WvsContext.nodestoneOpenResult(mr));
-            chr.write(WvsContext.matrixUpdate(chr.getSortedMatrixRecords(), false, 0, 0));
+            chr.write(WvsContext.matrixUpdate(chr, chr.getSortedMatrixRecords(), false, 0, 0));
         } else if (id == 2438411 || id == 2438412) {
             MatrixRecord mr = new MatrixRecord();
             mr.setIconID(10000024);
@@ -3132,7 +3155,7 @@ public class ScriptManagerImpl implements ScriptManager {
             mr.setSkillID1(400001039);
             chr.getMatrixRecords().add(mr);
             chr.write(WvsContext.nodestoneOpenResult(mr));
-            chr.write(WvsContext.matrixUpdate(chr.getSortedMatrixRecords(), false, 0, 0));
+            chr.write(WvsContext.matrixUpdate(chr, chr.getSortedMatrixRecords(), false, 0, 0));
         } else {
             List<VCoreInfo> infos = new ArrayList<>(VCoreData.getPossibilitiesByJob(chr.getJob()));
             int rng = Util.getRandom(99);
@@ -3169,9 +3192,10 @@ public class ScriptManagerImpl implements ScriptManager {
             }
             chr.getMatrixRecords().add(mr);
             chr.write(WvsContext.nodestoneOpenResult(mr));
-            chr.write(WvsContext.matrixUpdate(chr.getSortedMatrixRecords(), false, 0, 0));
+            chr.write(WvsContext.matrixUpdate(chr, chr.getSortedMatrixRecords(), false, 0, 0));
         }
     }
+
     public void hireTutor(boolean set) {
         chr.hireTutor(set);
     }
@@ -3310,13 +3334,17 @@ public class ScriptManagerImpl implements ScriptManager {
         if (chr.getUser().getAccountType() == AccountType.Admin) {
             return false;
         }
-        if (ServerConstants.RESTART_MINUTES > 0 && (Server.getInstance().MAINTENANCE_ACTIVE || Server.getInstance().MAINTENANCE_MODE || (System.currentTimeMillis() - Server.getInstance().upTime) >= (ServerConstants.RESTART_MINUTES - 30) * 60000L))
-            return true;
+//        if (ServerConstants.RESTART_MINUTES > 0 && (Server.getInstance().MAINTENANCE_ACTIVE || Server.getInstance().MAINTENANCE_MODE || (System.currentTimeMillis() - Server.getInstance().upTime) >= (ServerConstants.RESTART_MINUTES - 30) * 60000L))
+//            return true;
         if (chr.getParty() == null) {
             return true;
         }
         for (PartyMember partyMember : chr.getParty().getPartyMembers()) {
-            if (partyMember != null && partyMember.getChr() != null && partyMember.getChr().getScriptManager().getEventAmountDone(type) >= amountAllowed) {
+            if (partyMember != null
+                    && partyMember.getChr() != null
+                    && partyMember.getChr().getScriptManager().getEventAmountDone(type) >= amountAllowed
+                    && partyMember.getChr().getScriptManager().getEventAmountDone(type) != 0
+            ) {
                 return true;
             }
         }
@@ -3422,7 +3450,7 @@ public class ScriptManagerImpl implements ScriptManager {
         Set<Integer> nonEquips = new HashSet<>();
         for (int itemId : map.keySet()) {
             if (!ItemConstants.isEquip(itemId) ||
-                    !ItemData.getItemDeepCopy(itemId).isCash() ||
+                    Optional.ofNullable(ItemData.getItemDeepCopy(itemId)).filter(Item::isCash).isEmpty() ||
                     ItemConstants.isRemovedFromCashShop(itemId)) {
                 nonEquips.add(itemId);
             }
@@ -3458,5 +3486,60 @@ public class ScriptManagerImpl implements ScriptManager {
 
     public void printStyle(Cosmetic cosmetic) {
         System.out.printf("id: %d, name: %s", cosmetic.getId(), cosmetic.getName());
+    }
+
+    public int rand(int min, int max) {
+        return Randomizer.rand(min, max);
+    }
+
+    public void magnusMobZoneDamageBoost(int objectId) {
+        var life = chr.getField().getLifeByObjectID(objectId);
+        if (life instanceof Mob mob) {
+            Rect rect;
+            var perc = mob.getHp() / (double) mob.getMaxHp();
+            if (perc <= 0.25) { // 4
+                rect = BossConstants.MAGNUS_MOB_ZONE_RECTS[3];
+            } else if (perc <= 0.5) { // 3
+                rect = BossConstants.MAGNUS_MOB_ZONE_RECTS[2];
+            } else if (perc <= 0.75) { // 2
+                rect = BossConstants.MAGNUS_MOB_ZONE_RECTS[1];
+            } else { // 1
+                rect = BossConstants.MAGNUS_MOB_ZONE_RECTS[0];
+            }
+            var zoneRect = mob.getPosition().getRectAround(rect);
+            chr.getField().getChars().forEach(c -> {
+                var position = c.getPosition();
+                var x = position.getX();
+                var y = position.getY();
+                if (x >= zoneRect.getLeft() && y >= zoneRect.getTop()
+                        && x <= zoneRect.getRight() && y <= zoneRect.getBottom()) {
+                    // 範囲内
+                    var tsm = c.getTemporaryStatManager();
+//                    tsm.removeStat(CharacterTemporaryStat.IndieDamR, false);
+                    var o1 = new Option();
+                    o1.nReason = 80001340;
+                    o1.nValue = 1000;
+                    o1.tTerm = 1;
+                    tsm.putCharacterStatValue(CharacterTemporaryStat.IndieDamR, o1);
+                    tsm.sendSetStatPacket();
+                } else {
+                    // 範囲外
+                    c.damage(c.getHPPerc(1));
+                }
+            });
+        }
+    }
+
+    public void disposeAll() {
+        stop(ScriptType.Portal);
+        stop(ScriptType.Npc);
+        stop(ScriptType.Reactor);
+        stop(ScriptType.Quest);
+        stop(ScriptType.Item);
+        chr.dispose();
+    }
+
+    public <T> List<T> list(Collection<T> list) {
+        return new ArrayList<>(list);
     }
 }

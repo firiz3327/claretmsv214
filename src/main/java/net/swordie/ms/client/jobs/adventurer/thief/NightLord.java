@@ -433,4 +433,9 @@ public class NightLord extends Thief {
 
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_NL;
+    }
 }

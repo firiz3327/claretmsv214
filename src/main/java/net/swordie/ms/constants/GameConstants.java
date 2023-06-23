@@ -23,12 +23,12 @@ import java.util.List;
  * Created on 1/23/2018.
  */
 public class GameConstants {
-    public static final int CHANNELS_PER_WORLD = 3;
-    public static final int BUFFED_CHANNELS = 3;
-    public static final int BUFFED_CH_ST = 6;
+    public static final int SERVER_DOWN_TIME = 3000; // 3秒
+    public static final int CHANNELS_PER_WORLD = 2;
+    public static final int BUFFED_CH_ST = 2;
     public static final int BUFFED_CH_END = 10;
-    public static final int MOB_EXP_RATE = 1;
-    public static final int MOB_MESO_RATE = 1;
+    public static final int MOB_EXP_RATE = 10;
+    public static final int MOB_MESO_RATE = 10;
     public static final int MOB_DROP_RATE = 1;
     public static final long MAX_MONEY = 999_999_999_999_999L;
     public static final short DAMAGE_SKIN_MAX_SIZE = 100;
@@ -45,7 +45,7 @@ public class GameConstants {
 
     // Custom
     public static final int PLAYER_START_MAP = 4000011; // Maple Tree Hill
-    public static final int PLAYER_HUB_MAP = 100000000; // Henesys
+    public static final int PLAYER_HUB_MAP = 800000000; // Zipang
 
     // GameMaster
     public static final boolean HIDE_ON_LOGIN = false;
@@ -328,24 +328,24 @@ public class GameConstants {
 
     private static void initQuickMove() {
         quickMoveInfos = new ArrayList<>();
-        quickMoveInfos.add(new QuickMoveInfo(0, 9010063, QuickMoveType.Girl, 0, "Dressing Room", false,
-                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
-        quickMoveInfos.add(new QuickMoveInfo(0, 9400301, QuickMoveType.Nurse, 0, "Style Room", false,
-                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
+//        quickMoveInfos.add(new QuickMoveInfo(0, 9010063, QuickMoveType.Girl, 0, "Dressing Room", false,
+//                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
+//        quickMoveInfos.add(new QuickMoveInfo(0, 9400301, QuickMoveType.Nurse, 0, "Style Room", false,
+//                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 9000035, QuickMoveType.Boat, 1, "Warping", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 1092014, QuickMoveType.Taxi, 0, "Taxi", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
-        quickMoveInfos.add(new QuickMoveInfo(0, 9000038, QuickMoveType.Cat, 0, "VP / DP Shop", false,
-                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
+//        quickMoveInfos.add(new QuickMoveInfo(0, 9000038, QuickMoveType.Cat, 0, "VP / DP Shop", false,
+//                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 9010022, QuickMoveType.DimensionalPortal, 20, "Dimensional Portal", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 9071003, QuickMoveType.MonsterPark, 20, "Monster Park", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
-        quickMoveInfos.add(new QuickMoveInfo(0, 9030300, QuickMoveType.FreeMarket, 0, "Free Market", false,
+        quickMoveInfos.add(new QuickMoveInfo(0, 9030300, QuickMoveType.Cat, 0, "Home", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
-        quickMoveInfos.add(new QuickMoveInfo(0, 1012009, QuickMoveType.Bunny, 0, "Storage", false,
-                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
+//        quickMoveInfos.add(new QuickMoveInfo(0, 1012009, QuickMoveType.BlueKnightOfCygnusWoman, 0, "Storage", false,
+//                FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 9900000, QuickMoveType.Baret, 0, "Inventory Seller", false,
                 FileTime.fromType(FileTime.Type.ZERO_TIME), FileTime.fromType(FileTime.Type.MAX_TIME)));
         quickMoveInfos.add(new QuickMoveInfo(0, 9900001, QuickMoveType.Waitress, 0, "Job Advancement (Explorers only)", false,

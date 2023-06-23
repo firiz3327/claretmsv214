@@ -809,4 +809,9 @@ public class Paladin extends Warrior {
         }
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_PALADIN;
+    }
 }

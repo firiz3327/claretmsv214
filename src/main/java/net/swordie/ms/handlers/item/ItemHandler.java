@@ -1,6 +1,7 @@
 package net.swordie.ms.handlers.item;
 
 import net.swordie.ms.Server;
+import net.swordie.ms.claretms.ClaretMSConstants;
 import net.swordie.ms.client.Client;
 import net.swordie.ms.client.character.BroadcastMsg;
 import net.swordie.ms.client.character.Char;
@@ -12,7 +13,6 @@ import net.swordie.ms.client.character.skills.Skill;
 import net.swordie.ms.client.character.skills.temp.CharacterTemporaryStat;
 import net.swordie.ms.client.character.skills.temp.TemporaryStatManager;
 import net.swordie.ms.connection.InPacket;
-import net.swordie.ms.connection.OutPacket;
 import net.swordie.ms.connection.packet.*;
 import net.swordie.ms.constants.GameConstants;
 import net.swordie.ms.constants.ItemConstants;
@@ -20,7 +20,6 @@ import net.swordie.ms.constants.QuestConstants;
 import net.swordie.ms.enums.*;
 import net.swordie.ms.handlers.Handler;
 import net.swordie.ms.handlers.header.InHeader;
-import net.swordie.ms.handlers.header.OutHeader;
 import net.swordie.ms.life.pet.Pet;
 import net.swordie.ms.life.pet.PetSkill;
 import net.swordie.ms.loaders.FieldData;
@@ -334,6 +333,9 @@ public class ItemHandler {
             String medalString = (medalInt == 0 ? "" : String.format("<%s> ", StringData.getItemStringById(medalInt)));
 
             switch (itemID) {
+                case 5060048:
+                    chr.dispose();
+                    return;
                 case ItemConstants.HYPER_TELEPORT_ROCK: // Hyper Teleport Rock
                     short type = inPacket.decodeShort();
                     if (type == 1) {
@@ -928,18 +930,19 @@ public class ItemHandler {
                     chr.write(FieldPacket.showUnknownEnchantFailResult((byte) 0));
                     return;
                 }
-                long cost = GameConstants.getEnchantmentMesoCost(equip.getrLevel() + equip.getiIncReq(), equip.getChuc(), equip.isSuperiorEqp());
+                long cost = ClaretMSConstants.getEnchantmentMesoCost(equip.getrLevel() + equip.getiIncReq(), equip.getChuc(), equip.isSuperiorEqp());
                 if (chr.getMoney() < cost) {
                     chr.chatMessage("Mesos required: " + NumberFormat.getNumberInstance(Locale.US).format(cost));
                     chr.write(FieldPacket.showUnknownEnchantFailResult((byte) 0));
                     return;
                 }
                 Equip oldEquip = equip.deepCopy();
-                int successProp = GameConstants.getEnchantmentSuccessRate(equip);
+                int successProp = ClaretMSConstants.getEnchantmentSuccessRate(equip);
                 if (extraChanceFromMiniGame) {
-                    successProp *= 1.045;
+//                    successProp *= 1.045;
+                    successProp += 50; // ミニゲームで+5%
                 }
-                int destroyProp = safeGuard && equip.canSafeguardHyperUpgrade() ? 0 : GameConstants.getEnchantmentDestroyRate(equip);
+                int destroyProp = safeGuard && equip.canSafeguardHyperUpgrade() ? 0 : ClaretMSConstants.getEnchantmentDestroyRate(equip);
                 if (equippedInv && destroyProp > 0 && chr.getEquipInventory().getEmptySlots() == 0) {
                     c.write(WvsContext.broadcastMsg(BroadcastMsg.popUpMessage("You do not have enough space in your "
                             + "equip inventory in case your item gets destroyed.")));
@@ -948,24 +951,29 @@ public class ItemHandler {
                 success = Util.succeedProp(successProp, 1000);
                 boolean boom = false;
                 boolean canDegrade = equip.isSuperiorEqp() ? equip.getChuc() > 0 : equip.getChuc() > 5 && equip.getChuc() % 5 != 0;
+                if (equip.getChuc() <= 12) { // 12星までは失敗しても星を下げない
+                    canDegrade = false;
+                }
                 if (success) {
                     equip.setChuc((short) (equip.getChuc() + 1));
                     equip.setDropStreak(0);
                 } else if (Util.succeedProp(destroyProp, 1000)) {
-                    equip.setChuc((short) 0);
-                    equip.makeVestige();
-                    boom = true;
-                    if (equippedInv) {
-                        chr.unequip(equip);
-                        equip.setBagIndex(chr.getEquipInventory().getFirstOpenSlot());
-                        equip.updateToChar(chr);
-                        c.write(WvsContext.inventoryOperation(true, false, Move, (short) eqpPos, (short) equip.getBagIndex(), 0, equip));
-                    }
-                    if (!equip.isSuperiorEqp()) {
-                        equip.setChuc((short) Math.min(12, equip.getChuc()));
-                    } else {
-                        equip.setChuc((short) 0);
-                    }
+//                    equip.setChuc((short) 0);
+//                    equip.makeVestige();
+//                    boom = true;
+//                    if (equippedInv) {
+//                        chr.unequip(equip);
+//                        equip.setBagIndex(chr.getEquipInventory().getFirstOpenSlot());
+//                        equip.updateToChar(chr);
+//                        c.write(WvsContext.inventoryOperation(true, false, Move, (short) eqpPos, (short) equip.getBagIndex(), 0, equip));
+//                    }
+//                    if (!equip.isSuperiorEqp()) {
+//                        equip.setChuc((short) Math.min(12, equip.getChuc()));
+//                    } else {
+//                        equip.setChuc((short) 0);
+//                    }
+                    equip.setChuc((short) (equip.getChuc() - 2));
+                    equip.setDropStreak(equip.getDropStreak() + 1);
                 } else if (canDegrade) {
                     equip.setChuc((short) (equip.getChuc() - 1));
                     equip.setDropStreak(equip.getDropStreak() + 1);
@@ -1029,14 +1037,14 @@ public class ItemHandler {
                     chr.write(FieldPacket.showUnknownEnchantFailResult((byte) 0));
                     return;
                 }
-                cost = GameConstants.getEnchantmentMesoCost(equip.getrLevel() + equip.getiIncReq(), equip.getChuc(), equip.isSuperiorEqp());
-                destroyProp = GameConstants.getEnchantmentDestroyRate(equip);
+                cost = ClaretMSConstants.getEnchantmentMesoCost(equip.getrLevel() + equip.getiIncReq(), equip.getChuc(), equip.isSuperiorEqp());
+                destroyProp = ClaretMSConstants.getEnchantmentDestroyRate(equip);
                 if (safeGuard && equip.canSafeguardHyperUpgrade()) {
                     cost *= 2;
                 }
                 c.write(FieldPacket.hyperUpgradeDisplay(equip, equip.isSuperiorEqp() ? equip.getChuc() > 0 : equip.getChuc() > 5 && equip.getChuc() % 5 != 0,
-                        cost, 0, 0, GameConstants.getEnchantmentSuccessRate(equip), 0,
-                        destroyProp, 0, equip.getDropStreak() >= 2));
+                        cost, 0, 0, ClaretMSConstants.getEnchantmentSuccessRate(equip), 0,
+                        destroyProp, 0, equip.getChuc() <= 12 || equip.getDropStreak() >= 2));
                 break;
             case MiniGameDisplay:
                 c.write(FieldPacket.miniGameDisplay(eeType));
@@ -1131,6 +1139,7 @@ public class ItemHandler {
         }
         c.write(FieldPacket.socketCreateResult(success));
         equip.updateToChar(chr);
+        chr.warp(chr.getField());
     }
 
     @Handler(op = InHeader.NEBULITE_INSERT_REQUEST)

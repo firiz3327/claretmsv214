@@ -371,6 +371,8 @@ public class MobPool {
     public static OutPacket setAfterAttack(int mobID, short afterAttack, int serverAction, int attackCount, boolean left) {
         OutPacket outPacket = new OutPacket(OutHeader.MOB_SET_AFTER_ATTACK);
 
+        System.out.println("afterAttack: " + afterAttack + " " + attackCount + " " + serverAction + " " + left);
+
         outPacket.encodeInt(mobID);
         outPacket.encodeShort(afterAttack);
         outPacket.encodeInt(attackCount);

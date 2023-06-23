@@ -712,4 +712,9 @@ public class WindArcher extends Noblesse {
         arrowBow.setQuantity(2000);
         chr.addItemToInventory(arrowBow);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_WA;
+    }
 }

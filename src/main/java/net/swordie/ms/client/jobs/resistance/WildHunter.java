@@ -748,4 +748,9 @@ public class WildHunter extends Citizen {
 
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1352960)); // Arrow Head (Secondary)
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_WH;
+    }
 }

@@ -51,7 +51,7 @@ public class TemporaryStatManager {
     private byte defenseAtt;
     private int[] diceInfo = new int[22];
     private int[] diceOption = new int[8];
-    private List<Integer> mobZoneStates;
+    private List<Integer> mobZoneStates = new ArrayList<>();
     private int viperEnergyCharge;
     private StopForceAtom stopForceAtom;
     private LarknessManager larknessManager;

@@ -885,4 +885,9 @@ public class BattleMage extends Citizen {
 
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1352950)); // Magic Marble (Secondary)
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_BAM;
+    }
 }

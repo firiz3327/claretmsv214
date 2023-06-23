@@ -901,4 +901,9 @@ public class Mihile extends Job {
         // Soul Shield of Protection
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1098000)); // SS Protection
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_MIHILE;
+    }
 }

@@ -23,7 +23,8 @@ if sm.getFieldID() == 350060300:
     dialog = "Do you want to head to the '#bBlack Heaven Core#k' to fight \r\n#bLotus#k?\r\n"
 
     for i in range(len(destinations)):
-        dialog += "#L%d##bGo to the Black Heaven Core (%s Mode) #r(Lv. %d+)#b#l\r\n" % (i, destinations[i][0], destinations[i][1])
+        dialog += "#L%d##bGo to the Black Heaven Core (%s Mode) #r(Lv. %d+)#b#l\r\n" % (
+            i, destinations[i][0], destinations[i][1])
 
     dialog += "#L99#Never mind."
     response = sm.sendSay(dialog)
@@ -33,7 +34,8 @@ if sm.getFieldID() == 350060300:
         sm.dispose()
 
     elif not sm.isPartyLeader():
-        sm.sendSayOkay("Please have your party leader talk to me if you wish to face #bLotus#k.")
+        sm.sendSayOkay(
+            "Please have your party leader talk to me if you wish to face #bLotus#k.")
         sm.dispose()
 
     elif response != 99 and sm.partyHasCoolDown(destinations[response][4], runsPerDay):
@@ -43,12 +45,14 @@ if sm.getFieldID() == 350060300:
 
     elif sm.checkParty() and response != 99:
         if is_party_eligible(destinations[response][1], sm.getParty()):
-            sm.setPartyDeathCount(destinations[response][3])
+            sm.setDeathCount(destinations[response][3])
             sm.warpInstanceIn(destinations[response][2], True)
-            sm.setInstanceTime(BossConstants.LOTUS_TIME)
-            sm.addCooldownTimeForParty(destinations[response][4], destinations[response][5])
+            sm.setInstanceTime(60 * 30)  # 30min
+            sm.addCooldownTimeForParty(
+                destinations[response][4], destinations[response][5])
         else:
-            sm.sendSayOkay("One or more party members are lacking the prerequisite entry quests, or are below level #b%d#k." % destinations[response][1])
+            sm.sendSayOkay(
+                "One or more party members are lacking the prerequisite entry quests, or are below level #b%d#k." % destinations[response][1])
 else:
     if sm.sendAskYesNo("Are you sure you want to leave the battlefield?"):
         sm.warpInstanceOutParty(807300100)

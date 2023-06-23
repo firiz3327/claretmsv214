@@ -17,6 +17,7 @@ import net.swordie.ms.client.jobs.adventurer.thief.BladeMaster;
 import net.swordie.ms.client.jobs.adventurer.thief.NightLord;
 import net.swordie.ms.client.jobs.adventurer.thief.Thief;
 import net.swordie.ms.client.jobs.adventurer.warrior.DarkKnight;
+import net.swordie.ms.client.jobs.adventurer.warrior.Hero;
 import net.swordie.ms.client.jobs.cygnus.BlazeWizard;
 import net.swordie.ms.client.jobs.cygnus.NightWalker;
 import net.swordie.ms.client.jobs.cygnus.WindArcher;
@@ -463,11 +464,8 @@ public class Summon extends Life {
             case BattleMage.ALTAR_OF_ANNIHILATION:
                 ((BattleMage) chr.getJobHandler()).getAnnihilationAltarList().remove(0); // remove first altar in the list.
                 break;
-            case Kanna.KISHIN_SHOUKAN:
-            case Job.MONOLITH:
-                getField().setKishin(false);
-                break;
-            case Job.FURY_TOTEM:
+//            case Kanna.KISHIN_SHOUKAN:
+            case Job.MONOLITH, Job.FURY_TOTEM:
                 getField().setKishin(false);
                 break;
             case Jett.GRAVITY_CRUSH:
@@ -484,6 +482,19 @@ public class Summon extends Life {
         }
     }
 
+    private void onTerm(Field field) {
+        final Char chr = getChr();
+        final int skillId = getSkillID();
+        switch (skillId) {
+            case Hero.BURNING_SOUL_BLADE, Hero.BURNING_SOUL_BLADE_STATIONARY:
+                SkillInfo si = SkillData.getSkillInfoById(Hero.BURNING_SOUL_BLADE);
+                int slv = chr.getSkillLevel(Hero.BURNING_SOUL_BLADE);
+                chr.addSkillCoolTime(Hero.BURNING_SOUL_BLADE, si.getValue(SkillStat.x, slv) * 1000);
+                break;
+        }
+        field.removeLife(getObjectId(), true);
+    }
+
     @Override
     public void broadcastSpawnPacket(Char onlyChar) {
         Field field = getField();
@@ -494,8 +505,10 @@ public class Summon extends Life {
             setEnterType(enterType);
         } else {
             if (getSummonTerm() > 0) {
-                ScheduledFuture sf = EventManager.addEvent(() -> field.removeLife(getObjectId(), true), getSummonTerm());
-                field.addLifeSchedule(this, sf);
+                field.addLifeSchedule(
+                        this,
+                        EventManager.addEvent(() -> onTerm(field), getSummonTerm())
+                );
             }
             field.broadcastPacket(Summoned.summonedCreated(getChr().getId(), this));
         }

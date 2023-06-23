@@ -905,4 +905,9 @@ public class BeastTamer extends Job {
         addSkill(110001510, 1); // Critter Select
         addSkill(110001514, 1); // Homeward Bound
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_GUARDIAN;
+    }
 }

@@ -548,4 +548,9 @@ public class Evan extends Job {
         }
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_EVAN;
+    }
 }

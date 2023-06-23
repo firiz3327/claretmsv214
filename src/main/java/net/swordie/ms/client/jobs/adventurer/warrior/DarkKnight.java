@@ -538,6 +538,11 @@ public class DarkKnight extends Warrior {
 
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_DARK_KNIGHT;
+    }
 }
 
 

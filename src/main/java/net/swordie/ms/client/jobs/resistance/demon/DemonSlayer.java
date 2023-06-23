@@ -611,4 +611,9 @@ public class DemonSlayer extends Demon {
         chr.getEquippedInventory().addItem(primaryWeapon);
         primaryWeapon.updateToChar(chr);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_DS;
+    }
 }

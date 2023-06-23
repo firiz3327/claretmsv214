@@ -459,4 +459,9 @@ public class ThunderBreaker extends Noblesse {
         Item steelKnuckler = ItemData.getItemDeepCopy(1482110);
         chr.addItemToInventory(steelKnuckler);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return CALL_OF_CYGNUS_TB;
+    }
 }

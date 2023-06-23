@@ -1,6 +1,7 @@
 package net.swordie.ms.handlers.user;
 
 import net.swordie.ms.ServerConstants;
+import net.swordie.ms.claretms.ClaretMSConstants;
 import net.swordie.ms.client.Account;
 import net.swordie.ms.client.Client;
 import net.swordie.ms.client.User;
@@ -116,7 +117,6 @@ public class UserHandler {
     }
 
 
-
     @Handler(op = InHeader.USER_RENAME_REQUEST)
     public static void handleUserRenameRequest(Char chr, InPacket inPacket) {
         inPacket.decodeInt(); // 1
@@ -152,7 +152,6 @@ public class UserHandler {
     }
 
 
-
     @Handler(op = InHeader.USER_RENAME_SPW_CHECK)
     public static void handleUserRenameSpwCheck(Char chr, InPacket inPacket) {
         String pic = inPacket.decodeString();
@@ -173,7 +172,6 @@ public class UserHandler {
         }
         chr.write(UserLocal.renameResult(result, 4034803));
     }
-
 
 
     @Handler(op = InHeader.USER_HIT)
@@ -433,7 +431,6 @@ public class UserHandler {
     }
 
 
-
     @Handler(op = InHeader.MONSTER_BOOK_MOB_INFO)
     public static void handleMonsterBookMobInfo(Char chr, InPacket inPacket) {
         inPacket.decodeInt(); // tick
@@ -475,20 +472,21 @@ public class UserHandler {
         }
         chr.addHonorExp(-cost);
 
-        boolean gradeUp = !locked && Util.succeedProp(GameConstants.BASE_CHAR_POT_UP_RATE);
-        boolean gradeDown = !locked && Util.succeedProp(GameConstants.BASE_CHAR_POT_DOWN_RATE);
+        boolean gradeUp = !locked && Util.succeedProp(ClaretMSConstants.BASE_CHAR_POT_UP_RATE);
+//        boolean gradeDown = !locked && Util.succeedProp(GameConstants.BASE_CHAR_POT_DOWN_RATE);
         byte grade = cpm.getGrade();
         // update grades
         if (grade < CharPotGrade.Legendary.ordinal() && gradeUp) {
             grade++;
-        } else if (grade > CharPotGrade.Rare.ordinal() && gradeDown) {
-            grade--;
         }
+//        else if (grade > CharPotGrade.Rare.ordinal() && gradeDown) {
+//            grade--;
+//        }
         // set new potentials that weren't locked
         List<CharacterPotential> potentials = CharacterPotentialMan.generateRandomPotential(3, grade, false, lockedLines);
         for (CharacterPotential cp : potentials) {
             cpm.addPotential(cp);
-        //    chr.chatMessage("Key:" + cp.getKey() + " Grade:" + cp.getGrade() + " SkillID:" + cp.getSkillID() + "(" + StringData.getSkillStringById(cp.getSkillID()).getName() + ") SLV:" + cp.getSlv());
+            //    chr.chatMessage("Key:" + cp.getKey() + " Grade:" + cp.getGrade() + " SkillID:" + cp.getSkillID() + "(" + StringData.getSkillStringById(cp.getSkillID()).getName() + ") SLV:" + cp.getSlv());
         }
     }
 
@@ -578,7 +576,7 @@ public class UserHandler {
         chr.setRuneCooldown(System.currentTimeMillis());
         chr.addSkillCoolTime(RuneStone.SEALED_RUNE_POWER, GameConstants.RUNE_COOLDOWN_TIME * 60 * 1000);
         chr.setRuneCooldownVisual(GameConstants.RUNE_COOLDOWN_TIME * 60);
-       // chr.dispose();
+        // chr.dispose();
     }
 
     @Handler(op = InHeader.MONSTER_COLLECTION_EXPLORE_REQ)

@@ -257,7 +257,7 @@ public class PetHandler {
         Pet pet = chr.getPetByIdx(petIdx);
         int coolTime = si == null ? 0 : si.getValue(SkillStat.cooltime, 1);
         if (skillID != 0 && (si == null || pet == null || !pet.getItem().hasPetSkill(PetSkill.AUTO_BUFF)
-                || skill == null || skill.getCurrentLevel() == 0 || coolTime > 0)) {
+                || skill == null || skill.getCurrentLevel() == 0/* || coolTime > 0*/)) {
             chr.chatMessage("Something went wrong when adding the pet skill.");
             chr.getOffenseManager().addOffense(String.format("Character %d tried to illegally add a pet skill (skillID = %d, skill = %s, "
                     + "pet = %s, coolTime = %d)", chr.getId(), skillID, skill, pet, coolTime));

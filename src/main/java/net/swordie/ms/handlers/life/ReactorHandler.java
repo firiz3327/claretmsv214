@@ -13,6 +13,7 @@ import net.swordie.ms.scripts.ScriptType;
 import org.apache.log4j.Logger;
 
 import javax.script.ScriptException;
+import java.util.Arrays;
 
 public class ReactorHandler {
 
@@ -23,8 +24,10 @@ public class ReactorHandler {
     public static void handleReactorClick(Client c, InPacket inPacket) {
         Char chr = c.getChr();
         int objID = inPacket.decodeInt();
-        int idk = inPacket.decodeInt();
-        byte type = inPacket.decodeByte();
+//        System.out.println(inPacket.decodeString()); // ダメ byte, short, int, long, String idkの部分がガチわからん
+//        int idk = inPacket.decodeInt();
+//        byte type = inPacket.decodeByte();
+        byte type = 1;
         Life life = chr.getField().getLifeByObjectID(objID);
         if (!(life instanceof Reactor)) {
             log.error("Could not find reactor with objID " + objID);

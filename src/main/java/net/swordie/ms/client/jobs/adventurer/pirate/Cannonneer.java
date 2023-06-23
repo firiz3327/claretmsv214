@@ -528,4 +528,9 @@ public class Cannonneer extends Pirate {
         super.cancelTimers();
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_CANNON;
+    }
 }

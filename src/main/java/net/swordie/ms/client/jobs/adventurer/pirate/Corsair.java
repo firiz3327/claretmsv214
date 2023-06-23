@@ -459,4 +459,9 @@ public class Corsair extends Pirate {
         super.cancelTimers();
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_SAIR;
+    }
 }

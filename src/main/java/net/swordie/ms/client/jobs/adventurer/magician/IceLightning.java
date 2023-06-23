@@ -446,4 +446,9 @@ public class IceLightning extends Magician {
     public void cancelTimers() {
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_IL;
+    }
 }

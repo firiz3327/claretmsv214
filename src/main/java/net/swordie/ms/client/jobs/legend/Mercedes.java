@@ -560,4 +560,9 @@ public class Mercedes extends Job {
         // Secondary - Magic Arrows
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1352000)); // Magic Arrows
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_MERC;
+    }
 }

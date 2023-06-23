@@ -929,4 +929,9 @@ public class Pathfinder extends Archer {
         arrows.setQuantity(2000);
         chr.addItemToInventory(arrows);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_PF;
+    }
 }

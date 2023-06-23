@@ -1,6 +1,7 @@
 package net.swordie.ms.client.character;
 
 import net.swordie.ms.Server;
+import net.swordie.ms.claretms.MatrixEnhanceSlot;
 import net.swordie.ms.client.Account;
 import net.swordie.ms.client.Client;
 import net.swordie.ms.client.LinkSkill;
@@ -216,6 +217,10 @@ public class Char {
     @JoinColumn(name = "charId")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<MatrixRecord> matrixRecords = new HashSet<>();
+
+    @JoinColumn(name = "charId")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<MatrixEnhanceSlot> matrixEnhanceSlots = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "hyperrockfields", joinColumns = @JoinColumn(name = "charId"))
@@ -1922,6 +1927,21 @@ public class Char {
         return getMatrixRecords().stream()
                 .sorted(Comparator.comparingLong(MatrixRecord::getId))
                 .collect(Collectors.toList());
+    }
+
+    public void positionUpdateMatrixRecords() {
+        var posSortedActiveList = getMatrixRecords().stream().filter(MatrixRecord::isActive).sorted(Comparator.comparingLong(MatrixRecord::getPosition)).toList();
+        for (int i = 0; i < posSortedActiveList.size(); i++) {
+            posSortedActiveList.get(i).setPosition(i);
+        }
+    }
+
+    public MatrixRecord getActiveSlotMatrixRecord(int pos) {
+        return getMatrixRecords().stream().filter(mr -> mr.isActive() && mr.getPosition() == pos).findFirst().orElse(null);
+    }
+
+    public int getMatrixSlotLevel(int pos) {
+        return getMatrixEnhanceSlots().stream().filter(mes -> mes.getPosition() == pos).findFirst().map(MatrixEnhanceSlot::getLevel).orElse(0);
     }
 
     @Override
@@ -5777,6 +5797,14 @@ public class Char {
         this.matrixRecords = matrixRecords;
     }
 
+    public Set<MatrixEnhanceSlot> getMatrixEnhanceSlots() {
+        return matrixEnhanceSlots;
+    }
+
+    public void setMatrixEnhanceSlots(Set<MatrixEnhanceSlot> matrixEnhanceSlots) {
+        this.matrixEnhanceSlots = matrixEnhanceSlots;
+    }
+
     public int getNodeShards() {
         Quest quest = getQuestManager().getQuestById(QuestConstants.NODESHARD_COUNT);
         if (quest == null) {
@@ -6179,7 +6207,7 @@ public class Char {
 
     public void deductNX(int nx) {
         User user = getUser();
-        user.addNXPrepaid(nx);
+        user.addNXPrepaid(-nx);
         if (nx != 0) {
             write(UserPacket.scriptProgressMessage(String.format("You have lost %,d NX.", nx)));
             write(UserPacket.progressMessageFont(ProgressMessageFontType.Normal, 16, ProgressMessageColourType.Red, 300, String.format("You have lost %,d NX.", nx)));
@@ -6737,10 +6765,10 @@ public class Char {
 
     public int getFirstOpenMatrixSlot() {
         // TODO: check for max slot count
-        List<MatrixRecord> activeRecords = getMatrixRecords().stream().filter(MatrixRecord::isActive).sorted(Comparator.comparingInt(MatrixRecord::getPosition)).collect(Collectors.toList());
+        List<MatrixRecord> posSortedActiveRecords = getMatrixRecords().stream().filter(MatrixRecord::isActive).sorted(Comparator.comparingInt(MatrixRecord::getPosition)).toList();
         int pos = -1;
         boolean found = false;
-        for (MatrixRecord mr : activeRecords) {
+        for (MatrixRecord mr : posSortedActiveRecords) {
             int newPos = mr.getPosition();
             if (newPos - pos > 1) {
                 // gap in positions
@@ -6967,5 +6995,37 @@ public class Char {
 
     public void removeSetBaseStat(BaseStat bs, int value) {
         addSetBaseStat(bs, -value);
+    }
+
+    public int getDropRate() {
+        int dropRate = getTotalStat(BaseStat.dropR);
+        if (getEquippedInventory().hasItem(1122219)) { // Greed Pendant
+            dropRate += 20;
+        }
+        if (getCashInventory().getItems().stream()
+                .anyMatch(item -> ItemConstants.is2XDropCoupon(item.getItemId()))) {
+            dropRate += 100;
+        }
+        return dropRate;
+    }
+
+    public int getExpRate() {
+        int expRate = getTotalStat(BaseStat.expR);
+        // 1day 2x EXP Special Coupon
+        if (getCashInventory().getItems().stream()
+                .anyMatch(item -> item.getItemId() == 5211046)) {
+            expRate += 100;
+        }
+        return expRate;
+    }
+
+    public int getMesoRate() {
+        int mesoRate = getTotalStat(BaseStat.mesoR);
+        // Golden Apple (2x Meso Coupon)
+        if (getCashInventory().getItems().stream()
+                .anyMatch(item -> item.getItemId() == 5060048)) {
+            mesoRate += 100;
+        }
+        return mesoRate;
     }
 }

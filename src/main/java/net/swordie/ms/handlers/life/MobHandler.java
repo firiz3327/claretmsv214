@@ -15,6 +15,7 @@ import net.swordie.ms.constants.JobConstants;
 import net.swordie.ms.enums.ChatType;
 import net.swordie.ms.enums.MessageType;
 import net.swordie.ms.enums.QuestStatus;
+import net.swordie.ms.handlers.EventManager;
 import net.swordie.ms.handlers.Handler;
 import net.swordie.ms.handlers.header.InHeader;
 import net.swordie.ms.handlers.header.OutHeader;
@@ -31,6 +32,7 @@ import net.swordie.ms.life.movement.MovementInfo;
 import net.swordie.ms.loaders.SkillData;
 import net.swordie.ms.loaders.containerclasses.MobSkillInfo;
 import net.swordie.ms.util.Position;
+import net.swordie.ms.util.Randomizer;
 import net.swordie.ms.util.Util;
 import net.swordie.ms.util.container.Tuple;
 import net.swordie.ms.world.field.Field;
@@ -39,6 +41,7 @@ import net.swordie.ms.world.field.fieldeffect.FieldEffect;
 import org.apache.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
 import java.util.stream.Collectors;
 
 public class MobHandler {
@@ -196,32 +199,50 @@ public class MobHandler {
 
         // START OF BOSS FEATURES
 
+        // Vellum
+        if (mob.getTemplateId() == 8930000) {
+            if (Randomizer.nextInt(10) >= 6) { // 40%
+                final Position pos = mob.getPosition();
+                EventManager.addEvent(() -> {
+                    mob.getField().spawnMob(
+                            8930001,
+                            pos.getX() + Randomizer.nextInt(300) * (Randomizer.nextBoolean() ? -1 : 1),
+                            pos.getY(),
+                            false,
+                            0
+                    );
+                }, Randomizer.nextInt(3000));
+            }
+        } else if (mob.getTemplateId() == 8930001 && mob.getProperty("tail") == null) {
+            mob.setProperty("tail", "die");
+            EventManager.addEvent(() -> mob.getField().removeLife(mob), 5000);
+        }
 
         // ZAKUM RELATED FEATURES // TODO MOB_SKILL_DELAY ERROR 38
         if (Util.arrayContains(BossConstants.ZAKUM_ARMS, mob.getTemplateId()) && field.getNextZakArmSmash() <= System.currentTimeMillis()) {
             if (!field.isZakPlatformsVisible()) {
-                int delaySN = field.getZakArmSmashMobs()/10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 5 : 6) ? 1 : 0;
+                int delaySN = field.getZakArmSmashMobs() / 10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 5 : 6) ? 1 : 0;
                 MobSkill armSmashSkill = mob.getSkills().stream().filter(msd -> msd.getSkillID() == 176 && msd.getLevel() != 27 && msd.getSkillSN() == delaySN).findFirst().orElse(null);
                 if (armSmashSkill != null) {
                     Set<Integer> zakArms = new HashSet<>();
                     if (mob.getTemplateId() <= 8800010) {
-                        if (field.getZakArmSmashMobs()/10 == 1)
+                        if (field.getZakArmSmashMobs() / 10 == 1)
                             field.setZakArmSmashMobs(20);
-                        while (zakArms.size() < field.getZakArmSmashMobs()/10) {
+                        while (zakArms.size() < field.getZakArmSmashMobs() / 10) {
                             zakArms.add(Util.getRandomFromCollection(Arrays.asList(BossConstants.NORMAL_ZAKUM_ARMS)));
                         }
                     } else if (mob.getTemplateId() <= 8800030) {
-                        while (zakArms.size() < field.getZakArmSmashMobs()/10) {
+                        while (zakArms.size() < field.getZakArmSmashMobs() / 10) {
                             zakArms.add(Util.getRandomFromCollection(Arrays.asList(BossConstants.EASY_ZAKUM_ARMS)));
                         }
                     } else {
-                        if (field.getZakArmSmashMobs()/10 == 1)
+                        if (field.getZakArmSmashMobs() / 10 == 1)
                             field.setZakArmSmashMobs(20);
-                        while (zakArms.size() < field.getZakArmSmashMobs()/10) {
+                        while (zakArms.size() < field.getZakArmSmashMobs() / 10) {
                             zakArms.add(Util.getRandomFromCollection(Arrays.asList(BossConstants.CHAOS_ZAKUM_ARMS)));
                         }
                     }
-                    for (int i = 0; i < field.getZakArmSmashMobs()/10; i++) {
+                    for (int i = 0; i < field.getZakArmSmashMobs() / 10; i++) {
                         int armID = Util.getRandomFromCollection(zakArms);
                         if (field.getLifeByTemplateId(armID) instanceof Mob) {
                             Mob zakArmMob = (Mob) field.getLifeByTemplateId(armID);
@@ -235,16 +256,16 @@ public class MobHandler {
                 }
                 field.setZakArmSmashMobs(field.getZakArmSmashMobs() + 1);
                 if (field.getZakArmSmashMobs() % 10 == 3)
-                    field.setZakArmSmashMobs(field.getZakArmSmashMobs()/10*10+10);
-                if (field.getZakArmSmashMobs()/10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 4 : 5))
-                    field.setZakArmSmashMobs(field.getZakArmSmashMobs()/10*10+10);
-                if (field.getZakArmSmashMobs()/10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 5 : 6) && field.getZakArmSmashMobs() % 10 == 2)
+                    field.setZakArmSmashMobs(field.getZakArmSmashMobs() / 10 * 10 + 10);
+                if (field.getZakArmSmashMobs() / 10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 4 : 5))
+                    field.setZakArmSmashMobs(field.getZakArmSmashMobs() / 10 * 10 + 10);
+                if (field.getZakArmSmashMobs() / 10 == (Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 5 : 6) && field.getZakArmSmashMobs() % 10 == 2)
                     field.setZakArmSmashMobs(Util.arrayContains(BossConstants.EASY_ZAKUM_ARMS, mob.getTemplateId()) ? 10 : 20);
                 field.setNextZakArmSmash(System.currentTimeMillis() + (mob.getTemplateId() < 8800011 ? BossConstants.NORMAL_ZAKUM_ARM_SLAM_INTERVAL : mob.getTemplateId() < 8800031 ? BossConstants.EASY_ZAKUM_ARM_SLAM_INTERVAL : BossConstants.CHAOS_ZAKUM_ARM_SLAM_INTERVAL));
             } else {
                 MobSkill armClapSkill = Util.getRandomFromCollection(mob.getSkills().stream().filter(msd -> msd.getSkillID() == 176 && msd.getLevel() == 27).collect(Collectors.toSet()));
                 int platform = new Random().nextInt(3) + 3;
-                field.getMobs().stream().filter(mb -> (mb.getTemplateId() % 10 == platform || mb.getTemplateId() % 10 == platform+4)
+                field.getMobs().stream().filter(mb -> (mb.getTemplateId() % 10 == platform || mb.getTemplateId() % 10 == platform + 4)
                         && (mb.getTemplateId() % 10 >= 3 && mb.getTemplateId() % 10 <= 6 && mb.getField().getLifeByTemplateId(mb.getTemplateId() + 4) != null
                         || (mb.getTemplateId() % 10 >= 7 || mb.getTemplateId() % 10 == 0) && mb.getField().getLifeByTemplateId(mb.getTemplateId() - 4) != null)).forEach(mb -> {
                     mb.getSkillDelays().add(armClapSkill);
@@ -342,7 +363,7 @@ public class MobHandler {
         } else if (JobConstants.isAngelicBuster(chr.getJob()) && chr.hasSkill(AngelicBuster.LOVELY_STING)) {
             skillID = AngelicBuster.LOVELY_STING_EXPLOSION;
         } else {
-            chr.chatMessage("Unhandled mob explosion for your job.");
+            chr.chatMessage("Unhandled mob explosion for your job. skillID: " + skillID);
             return;
         }
         Mob mob = (Mob) chr.getField().getLifeByObjectID(mobID);
@@ -372,7 +393,7 @@ public class MobHandler {
             // Should this be handled like this? I doubt it, but it works :D
             int dataType = 0;
             switch (life.getTemplateId()) {
-                case 8880002: // Normal magnus
+                case 8880002, 8880000, 8880010 -> { // Normal magnus
                     double perc = mob.getHp() / (double) mob.getMaxHp();
                     if (perc <= 0.25) {
                         dataType = 4;
@@ -383,9 +404,8 @@ public class MobHandler {
                     } else {
                         dataType = 1;
                     }
-                    break;
-                default:
-                    log.error("Unhandled mob zone stat for mob template id " + life.getTemplateId());
+                }
+                default -> log.error("Unhandled mob zone stat for mob template id " + life.getTemplateId());
             }
             chr.getField().broadcastPacket(FieldPacket.changeMobZone(mobID, dataType));
         }

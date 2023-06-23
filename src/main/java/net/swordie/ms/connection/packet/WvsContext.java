@@ -29,14 +29,12 @@ import net.swordie.ms.connection.OutPacket;
 import net.swordie.ms.constants.ItemConstants;
 import net.swordie.ms.enums.*;
 import net.swordie.ms.handlers.header.OutHeader;
-import net.swordie.ms.loaders.ItemData;
 import net.swordie.ms.util.AntiMacro;
 import net.swordie.ms.util.FileTime;
 import net.swordie.ms.util.Position;
 import org.apache.log4j.LogManager;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.swordie.ms.enums.InvType.EQUIP;
 import static net.swordie.ms.enums.InvType.EQUIPPED;
@@ -1200,12 +1198,37 @@ public class WvsContext {
         for (MatrixRecord mr : matrixRecords) {
             outPacket.encode(mr);
         }
-        List<MatrixRecord> activeRecords = matrixRecords.stream().filter(MatrixRecord::isActive).collect(Collectors.toList());
+        List<MatrixRecord> activeRecords = matrixRecords.stream().filter(MatrixRecord::isActive).toList();
         outPacket.encodeInt(activeRecords.size());
         for (MatrixRecord mr : activeRecords) {
             outPacket.encodeInt(matrixRecords.indexOf(mr));
             outPacket.encodeInt(mr.getPosition());
             outPacket.encodeInt(0); // nLevel
+            outPacket.encodeByte(1); // bHide
+        }
+        outPacket.encodeByte(remove);
+        outPacket.encodeInt(removeType);
+        if (removeType == 0) {
+            outPacket.encodeInt(removeArg);
+        }
+
+        return outPacket;
+    }
+
+    public static OutPacket matrixUpdate(Char chr, List<MatrixRecord> matrixRecords, boolean remove, int removeType, int removeArg) {
+        OutPacket outPacket = new OutPacket(OutHeader.MATRIX_UPDATE);
+
+        outPacket.encodeInt(matrixRecords.size());
+        for (MatrixRecord mr : matrixRecords) {
+            outPacket.encode(mr);
+        }
+        final List<MatrixRecord> activeRecords = matrixRecords.stream().filter(MatrixRecord::isActive).sorted(Comparator.comparingLong(MatrixRecord::getPosition)).toList();
+        outPacket.encodeInt(activeRecords.size());
+        for (MatrixRecord mr : activeRecords) {
+            System.out.println("slotLevel: " + mr.getPosition() + " " + chr.getMatrixSlotLevel(mr.getPosition()));
+            outPacket.encodeInt(matrixRecords.indexOf(mr));
+            outPacket.encodeInt(mr.getPosition());
+            outPacket.encodeInt(chr.getMatrixSlotLevel(mr.getPosition())); // nLevel
             outPacket.encodeByte(1); // bHide
         }
         outPacket.encodeByte(remove);

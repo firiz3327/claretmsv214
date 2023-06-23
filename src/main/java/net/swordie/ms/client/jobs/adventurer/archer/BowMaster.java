@@ -721,4 +721,8 @@ public class BowMaster extends Archer {
         return type == 3 ? num * 2 : num; // Magic Arrow has 2x as many arrows
     }
 
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_BOW;
+    }
 }

@@ -152,6 +152,7 @@ public class MigrationHandler {
         acc.initAuctions();
         chr.recalcStats(EnumSet.of(BaseStat.mhp, BaseStat.mmp));
         chr.checkHotTimeRewards();
+        chr.write(WvsContext.matrixUpdate(chr, chr.getSortedMatrixRecords(), false, 0, 0));
     }
 
 

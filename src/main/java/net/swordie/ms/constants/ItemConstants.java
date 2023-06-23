@@ -739,30 +739,19 @@ public class ItemConstants {
         }
         ItemOptionType type = ItemOptionType.getByVal(vals.getOrDefault(ScrollStat.optionType, 0));
         int equipId = equip.getItemId();
-        switch(type) {
-            case AnyEquip:
-                return true;
-            case Weapon: // no emblems for nebs here
-                return isWeapon(equipId) || isShield(equipId);
-            case AnyExceptWeapon:
-                return !isWeapon(equipId) && !isShield(equipId);
-            case ArmorExceptGlove:
-                return isBelt(equipId) || isHat(equipId) || isOverall(equipId) || isTop(equipId) || isBottom(equipId) || isShoe(equipId) || isCape(equipId);
-            case Accessory:
-                return isRing(equipId) || isPendant(equipId) || isFaceAccessory(equipId) || isEyeAccessory(equipId) || isEarrings(equipId) || isShoulder(equipId);
-            case Hat:
-                return isHat(equipId);
-            case Top:
-                return isTop(equipId) || isOverall(equipId);
-            case Bottom:
-                return isBottom(equipId) || isOverall(equipId);
-            case Glove:
-                return isGlove(equipId);
-            case Shoes:
-                return isShoe(equipId);
-            default:
-                return false;
-        }
+        return switch (type) {
+            case AnyEquip -> true;
+            // no emblems for nebs here
+            case Weapon -> isWeapon(equipId) || isShield(equipId);
+            case AnyExceptWeapon -> !isWeapon(equipId) && !isShield(equipId);
+            case ArmorExceptGlove -> isBelt(equipId) || isHat(equipId) || isOverall(equipId) || isTop(equipId) || isBottom(equipId) || isShoe(equipId) || isCape(equipId);
+            case Accessory -> isRing(equipId) || isPendant(equipId) || isFaceAccessory(equipId) || isEyeAccessory(equipId) || isEarrings(equipId) || isShoulder(equipId);
+            case Hat -> isHat(equipId);
+            case Top -> isTop(equipId) || isOverall(equipId);
+            case Bottom -> isBottom(equipId) || isOverall(equipId);
+            case Glove -> isGlove(equipId);
+            case Shoes -> isShoe(equipId);
+        };
     }
 
     public static List<ItemOption> getOptionsByEquip(Equip equip, boolean bonus, int line) {
@@ -2327,32 +2316,11 @@ public class ItemConstants {
         if (bodyPart == null || getItemPrefix(itemID) == EquipPrefix.SecondaryWeapon.getVal()) {
             return false;
         }
-        switch (bodyPart) {
-            case Ring1:
-            case Ring2:
-            case Ring3:
-            case Ring4:
-            case Pendant:
-            case ExtendedPendant:
-            case Weapon:
-            case Belt:
-            case Hat:
-            case FaceAccessory:
-            case EyeAccessory:
-            case Top:
-            case Bottom:
-            case Shoes:
-            case Earrings:
-            case Shoulder:
-            case Gloves:
-            case Badge:
-            case Shield:
-            case Cape:
-            case MechanicalHeart:
-                return true;
-            default:
-                return false;
-        }
+        return switch (bodyPart) {
+            case Ring1, Ring2, Ring3, Ring4, Pendant, ExtendedPendant, Weapon, Belt, Hat, FaceAccessory, EyeAccessory, Top, Bottom, Shoes, Earrings, Shoulder, Gloves, Badge, Shield, Cape, MechanicalHeart ->
+                    true;
+            default -> false;
+        };
     }
 
     public static List<ScrollUpgradeInfo> getScrollUpgradeInfosByEquip(Equip equip) {

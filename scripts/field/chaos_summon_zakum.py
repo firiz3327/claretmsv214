@@ -1,4 +1,4 @@
-#field.spawnMob(8800102, -54, 86, False, 999999999)
+field.spawnMob(8800102, -54, 86, False, 999999999)
 
 for i in range(8):
     field.spawnMob(8800103 + i, -54, 86, False, 999999999)
@@ -10,3 +10,7 @@ while not breakLoop and field is not None and field.getChars().size() > 0:
         if field.getLifeByTemplateId(8800103 + i) is not None:
             breakLoop = False
     time.sleep(1)
+    
+# Fury's Flame 地面の炎
+# 8800117
+# 8800120　こいつは透明

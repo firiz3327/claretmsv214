@@ -10,8 +10,7 @@ sm.setBoxChat()
 sm.setColor(1)
 sm.setSpeakerType(3)
 
-if sm.sendNext("\r\n\r\n#L0# #m100000000# awaits.#l") == 0:
-    sm.setNpcOverrideBoxChat(9111063)
-    sm.setSpeakerType(3)
-    if sm.sendAskYesNo("Shall I transport you to #m100000000#?"):
-        sm.warp(100000000, 5)
+rf = sm.getReturnField()
+sel = sm.sendNext("\r\n\r\n#L0# Go back to #m" + str(rf) + "##l")
+if sel == 0:
+    sm.warp(rf)

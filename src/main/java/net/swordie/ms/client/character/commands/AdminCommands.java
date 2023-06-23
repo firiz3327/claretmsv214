@@ -826,13 +826,17 @@ public class AdminCommands {
     public static class ProItem extends AdminCommand {
         public static void execute(Char chr, String[] args) {
             if (args.length < 5) {
-                chr.chatMessage(Notice2, "Needs more args! <id> <Stat> <Attack> <Flame stats>");
+                chr.chatMessage(Notice2, "Needs more args! <id> <Stat> <Attack> <Flame stats> <only 1=ignoreDef, 2=bossDam>");
                 return;
             }
             int id = Integer.parseInt(args[1]);
             int stat = Integer.parseInt(args[2]);
             int atk = Integer.parseInt(args[3]);
             int flames = Integer.parseInt(args[4]);
+            int only = 0;
+            if (args.length > 5) {
+                 only = Integer.parseInt(args[5]);
+            }
             Equip equip = ItemData.getEquipDeepCopyFromID(id, false, chr.getJob());
             equip.setBaseStat(EquipBaseStat.iStr, stat);
             equip.setBaseStat(EquipBaseStat.iDex, stat);
@@ -843,10 +847,16 @@ public class AdminCommands {
             equip.setBaseStat(EquipBaseStat.iDEF, stat);
             equip.setBaseStat(EquipBaseStat.iPAD, atk);
             equip.setBaseStat(EquipBaseStat.iMAD, atk);
-            equip.setBaseStat(EquipBaseStat.bdr, flames);
-            equip.setBaseStat(EquipBaseStat.imdr, flames);
-            equip.setBaseStat(EquipBaseStat.damR, flames);
-            equip.setBaseStat(EquipBaseStat.statR, flames);
+            switch (only) {
+                case 1 -> equip.setBaseStat(EquipBaseStat.imdr, flames);
+                case 2 -> equip.setBaseStat(EquipBaseStat.bdr, flames);
+                default -> {
+                    equip.setBaseStat(EquipBaseStat.bdr, flames);
+                    equip.setBaseStat(EquipBaseStat.imdr, flames);
+                    equip.setBaseStat(EquipBaseStat.damR, flames);
+                    equip.setBaseStat(EquipBaseStat.statR, flames);
+                }
+            }
 
             chr.addItemToInventory(InvType.EQUIP, equip, false);
             chr.getClient().write(WvsContext.inventoryOperation(true, false,
@@ -2346,6 +2356,7 @@ public class AdminCommands {
             List<Mob> mobs = new ArrayList<>(chr.getField().getMobs());
             for (Mob mob : mobs) {
                 mob.die(false);
+                chr.chatMessage("killed: " + mob.getTemplateId());
             }
         }
     }

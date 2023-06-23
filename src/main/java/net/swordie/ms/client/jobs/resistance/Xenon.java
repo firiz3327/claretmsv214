@@ -726,5 +726,10 @@ public class Xenon extends Job {
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1353001)); // Dual Core Controller (Secondary)
 
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_XENON;
+    }
 }
 

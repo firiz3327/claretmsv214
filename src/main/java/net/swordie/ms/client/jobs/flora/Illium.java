@@ -864,4 +864,9 @@ public class Illium extends Job {
         chr.getQuestManager().completeQuest(34900); // Quest for Shelter Return
         chr.addSpToJobByCurrentJob(8);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return HERO_OF_THE_FLORA;
+    }
 }

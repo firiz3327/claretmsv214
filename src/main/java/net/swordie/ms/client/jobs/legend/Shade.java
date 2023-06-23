@@ -677,4 +677,9 @@ public class Shade extends Job {
             qm.completeQuest(questId);
         }
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_SH;
+    }
 }

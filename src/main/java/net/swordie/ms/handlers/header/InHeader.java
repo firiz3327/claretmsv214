@@ -847,8 +847,8 @@ public enum InHeader {
     //936 LegendAward?
     GACHAPON_REQUEST(937), // v210
 
-    NEBULITE_INSERT_REQUEST(917),
-    SOCKET_CREATE_REQUEST(918),
+    NEBULITE_INSERT_REQUEST(946), // v214
+    SOCKET_CREATE_REQUEST(947), // v214
 
     FAMILIAR_ADD_REQUEST(954), // v210 (+10?)
     FAMILIAR_SPAWN_REQUEST(-1),
@@ -1303,7 +1303,7 @@ public enum InHeader {
                 SPAM_60_SEC,
                  USER_TEMPORARY_STAT_UPDATE_REQUEST,
                 // USER_CALC_DAMAGE_STAT_SET_REQUEST,
-                // MOB_APPLY_CTRL,
+                 MOB_APPLY_CTRL,
                 //  USER_REQUEST_INSTANCE_TABLE,
                   USER_QUEST_REQUEST,
                 //  CHECK_LOGIN_AUTH_INFO,

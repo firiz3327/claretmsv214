@@ -342,7 +342,7 @@ public class Account {
         return cooldowns.stream().filter(eventCoolDown -> eventCoolDown.getEventType() == type).collect(Collectors.toList()).get(0);
     }
 
-    public int getEventAmountDone(int type){
+    public int getEventAmountDone(int type) {
         EventCoolDown cd = cooldowns.stream().filter(eventCoolDown -> eventCoolDown.getEventType() == type).findFirst().orElse(null);
         if (cd == null) {
             return 0;

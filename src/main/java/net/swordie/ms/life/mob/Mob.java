@@ -2,6 +2,7 @@ package net.swordie.ms.life.mob;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+
 import net.swordie.ms.client.character.Char;
 import net.swordie.ms.client.character.info.ExpIncreaseInfo;
 import net.swordie.ms.client.character.items.Item;
@@ -43,6 +44,7 @@ import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
 import net.swordie.ms.handlers.EventManager;
 import net.swordie.ms.util.FileTime;
 import org.python.google.common.collect.ArrayListMultimap;
@@ -403,14 +405,15 @@ public class Mob extends Life {
     public boolean isSealedInsteadDead() {
         return sealedInsteadDead;
     }
+
     public boolean isBuffed() {
         return isBuffed;
     }
-    
+
     public void setBuffed(boolean buff) {
         this.isBuffed = buff;
     }
-    
+
     public void setSealedInsteadDead(boolean sealedInsteadDead) {
         this.sealedInsteadDead = sealedInsteadDead;
     }
@@ -557,6 +560,7 @@ public class Mob extends Life {
 
     /**
      * Returns the current HP of the mob, in percentage in relation to the maximum HP.
+     *
      * @return current HP percantage
      */
     public double getHpPerc() {
@@ -882,14 +886,14 @@ public class Mob extends Life {
     public boolean isInvincible() {
         return invincible;
     }
-    
+
     public int getDropItemPeriod() {
         return dropItemPeriod;
     }
 
     public void setDropItemPeriod(int d) {
         this.dropItemPeriod = d;
-    }    
+    }
 
     public void setHideName(boolean hideName) {
         this.hideName = hideName;
@@ -1327,7 +1331,7 @@ public class Mob extends Life {
         newHp = newHp > Integer.MAX_VALUE ? Integer.MAX_VALUE : newHp;
         try {
             executeRunnableAtHp(percDamage);
-        } catch( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (oldHp > 0 && newHp <= 0) {
@@ -1348,10 +1352,10 @@ public class Mob extends Life {
         } else {
             getField().broadcastPacket(MobPool.hpIndicator(getObjectId(), (byte) (percDamage * 100)));
         }
-     for (ScheduledFuture sf : dropItemTimed) {
-	sf.cancel(true);
-	}    
-     startDropItemSchedule();   
+        for (ScheduledFuture sf : dropItemTimed) {
+            sf.cancel(true);
+        }
+        startDropItemSchedule();
     }
 
     public synchronized void heal(int amount) {
@@ -1445,8 +1449,8 @@ public class Mob extends Life {
         // TEST
         reviveMob();
         for (ScheduledFuture sf : dropItemTimed) {
-	sf.cancel(true);
-	}         
+            sf.cancel(true);
+        }
     }
 
     public void dropDrops() {
@@ -1471,8 +1475,8 @@ public class Mob extends Life {
         dropInfoSet.addAll(ItemConstants.getConsumableMobDrops(level));
         dropInfoSet.addAll(ItemConstants.getEquipMobDrops(job, level));
         // DropRate & MesoRate Increases
-        int mostDamageCharDropRate = getMostDamageChar() != null ? getMostDamageChar().getTotalStat(BaseStat.dropR) : 100;
-        int mostDamageCharMesoRate = getMostDamageChar() != null ? getMostDamageChar().getTotalStat(BaseStat.mesoR) : 100;
+        int mostDamageCharDropRate = mostDamageChar != null ? mostDamageChar.getDropRate() : 100;
+        int mostDamageCharMesoRate = mostDamageChar != null ? mostDamageChar.getMesoRate() : 100;
         int dropRateMob = (getTemporaryStat().hasCurrentMobStat(MobStat.Treasure)
                 ? getTemporaryStat().getCurrentOptionsByMobStat(MobStat.Treasure).yOption
                 : 0); // Item Drop Rate
@@ -1481,12 +1485,6 @@ public class Mob extends Life {
                 : 0); // Meso Drop Rate
         int totalMesoRate = mesoRateMob + mostDamageCharMesoRate * GameConstants.MOB_MESO_RATE;
         int totalDropRate = dropRateMob + mostDamageCharDropRate * GameConstants.MOB_DROP_RATE;
-        for (Item item : getMostDamageChar().getCashInventory().getItems()) {
-            if (ItemConstants.is2XDropCoupon(item.getItemId())) {
-                totalDropRate *= 2;
-                break;
-            }
-        }
         getField().drop(getDrops(), getField().getFootholdById(fhID), getPosition(), ownerID, totalMesoRate,
                 totalDropRate, getExplosiveReward() != 0);
     }
@@ -1568,7 +1566,6 @@ public class Mob extends Life {
         }
 
 
-
         for (PartyDamageInfo pdi : damagePercPerParty.values()) {
             pdi.distributeExp();
         }
@@ -1605,7 +1602,7 @@ public class Mob extends Life {
     }
 
     public void incrementSkillUseCount(MobSkill skill) {
-        skillUseCount.compute(skill.getSkillSN(), (k, v) -> v == null ? 1 : v+1);
+        skillUseCount.compute(skill.getSkillSN(), (k, v) -> v == null ? 1 : v + 1);
     }
 
     public void incrementSkillUseCount(int skillId, int slv) {
@@ -1663,12 +1660,11 @@ public class Mob extends Life {
                     mob.setPosition(getPosition());
                     getField().spawnLife(mob, null);
                 }
-                if (getField().getLifeByTemplateId(mobTemplateID+27) instanceof Mob)
-                    ((Mob)getField().getLifeByTemplateId(mobTemplateID+27)).die(false);
+                if (getField().getLifeByTemplateId(mobTemplateID + 27) instanceof Mob)
+                    ((Mob) getField().getLifeByTemplateId(mobTemplateID + 27)).die(false);
             }, 20000);
         }
     }
-
 
 
     private Map<Integer, Long> getSkillCooldowns() {
@@ -2050,8 +2046,8 @@ public class Mob extends Life {
         SkillInfo si = SkillData.getSkillInfoById(skillID);
         boolean hasIgnoreCounterCts =
                 tsm.hasStat(CharacterTemporaryStat.IgnoreAllCounter)
-                || tsm.hasStat(CharacterTemporaryStat.IgnoreAllImmune)
-                || tsm.hasStat(CharacterTemporaryStat.Invincible);
+                        || tsm.hasStat(CharacterTemporaryStat.IgnoreAllImmune)
+                        || tsm.hasStat(CharacterTemporaryStat.Invincible);
         boolean ignoreCounter = hasIgnoreCounterCts || (si != null && si.isIgnoreCounter());
         if ((mts.hasCurrentMobStat(MobStat.PCounter) || mts.hasCurrentMobStat(MobStat.MCounter)) && !ignoreCounter) {
             // DR is always P and M
@@ -2387,6 +2383,7 @@ public class Mob extends Life {
 
     public void buff(double multi) {
         ForcedMobStat fms = getForcedMobStat();
+        setLevel(Math.min(getLevel() + 10, 275));
         setMaxHp((long) (getMaxHp() * multi));
         setHp((long) (getHp() * multi));
         fms.setExp((long) (getExp() * multi));
@@ -2406,6 +2403,7 @@ public class Mob extends Life {
 
     /**
      * Sets the amount of time before this mob can summon an "afterdead" summon (like Queen).
+     *
      * @param nextSummonPossible amount of seconds until next possible summon
      */
     public void setNextSummonPossible(int nextSummonPossible) {
@@ -2415,15 +2413,15 @@ public class Mob extends Life {
     public boolean canResummon() {
         return nextSummonPossible <= System.currentTimeMillis();
     }
-    
-    
-   public final void cancelDropItem() {
+
+
+    public final void cancelDropItem() {
         lastDropTime = 0;
     }
 
     public final void startDropItemSchedule() {
         dropItemTimed.add(
-        EventManager.addFixedRateEvent(() -> doDropItem(System.currentTimeMillis()), (6 * 1000), (6 * 1000), TimeUnit.MILLISECONDS));
+                EventManager.addFixedRateEvent(() -> doDropItem(System.currentTimeMillis()), (6 * 1000), (6 * 1000), TimeUnit.MILLISECONDS));
     }
 
     public boolean shouldDrop(long now) {
@@ -2437,8 +2435,8 @@ public class Mob extends Life {
             case 9300907:
                 itemId = 4001101;
                 maxDrop = 10;
-                break;                
-            case 9300908:    
+                break;
+            case 9300908:
                 itemId = 4001101;
                 maxDrop = 100;
                 break;
@@ -2446,24 +2444,24 @@ public class Mob extends Life {
                 return;
         }
         if (!isAlive() && this != null && this.getField() != null) {
-                Item item = ItemData.getItemDeepCopy(itemId);
-                Drop drop = new Drop(itemId, item);
-                this.getField().drop(drop, getPosition(), getPosition(), true);
-                lastDropTime++;
-                if (itemId == 4001101) {
-                getField().broadcastPacket(FieldPacket.setAchieveRate(lastDropTime * 10));   
-                
+            Item item = ItemData.getItemDeepCopy(itemId);
+            Drop drop = new Drop(itemId, item);
+            this.getField().drop(drop, getPosition(), getPosition(), true);
+            lastDropTime++;
+            if (itemId == 4001101) {
+                getField().broadcastPacket(FieldPacket.setAchieveRate(lastDropTime * 10));
+
                 if (lastDropTime == 10) {
-                getField().setProperty("stage", 2);    
-                getField().broadcastPacket(WvsContext.weatherEffectNotice(WeatherEffNoticeType.RiceCakePQ, "You got all 10! Ohh this is the best. Hey, come see me again.", 7000));
-                //showWeatherNotice("6 Primrose Seeds, stolen by the pigs, must be recovered... ", WeatherEffNoticeType.RiceCakePQ)    
+                    getField().setProperty("stage", 2);
+                    getField().broadcastPacket(WvsContext.weatherEffectNotice(WeatherEffNoticeType.RiceCakePQ, "You got all 10! Ohh this is the best. Hey, come see me again.", 7000));
+                    //showWeatherNotice("6 Primrose Seeds, stolen by the pigs, must be recovered... ", WeatherEffNoticeType.RiceCakePQ)
                 }
-                }
+            }
         }
         if (lastDropTime >= maxDrop) {
-        for (ScheduledFuture sf : dropItemTimed) {
-	sf.cancel(true);
-	}   
+            for (ScheduledFuture sf : dropItemTimed) {
+                sf.cancel(true);
+            }
         }
-    }    
+    }
 }

@@ -77,8 +77,7 @@ public class ScriptHandler {
                     && nmt != NpcMessageType.AskAvatar && nmt != NpcMessageType.AskAvatarZero
                     && nmt != NpcMessageType.AskSlideMenu) || hasAnswer) {
                 // else -> User pressed escape in a selection (choice) screen
-                if(nmt == NpcMessageType.AskSlideMenu)
-                {
+                if (nmt == NpcMessageType.AskSlideMenu) {
                     chr.warp(DimensionalPortalTownType.getByVal(answer).getMapID());
                     smi.stop(ScriptType.Portal);
                     smi.stop(ScriptType.Npc);
@@ -121,7 +120,13 @@ public class ScriptHandler {
 
     @Handler(op = InHeader.USER_CONTENTS_MAP_REQUEST)
     public static void handleUserContentsMapRequest(Char chr, InPacket inPacket) {
-        inPacket.decodeShort();
+        short type = inPacket.decodeShort();
+
+        // なぜかV MatrixのNodecraftingボタンを押したときもイベントが発生し、「int fieldID = inPacket.decodeInt();」でエラーになるので防止
+        if (type == 4) {
+            return;
+        }
+
         // TODO: verify levels and that the maps are actually in the contents guide
         int fieldID = inPacket.decodeInt();
         Field field = chr.getOrCreateFieldByCurrentInstanceType(fieldID);

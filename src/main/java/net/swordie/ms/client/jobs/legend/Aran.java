@@ -700,4 +700,9 @@ public class Aran extends Job {
         chr.addItemToInventory(medal);
         chr.addSpToJobByCurrentJob(3);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_ARAN;
+    }
 }

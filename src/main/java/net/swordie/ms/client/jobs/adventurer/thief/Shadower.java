@@ -589,4 +589,9 @@ public class Shadower extends Thief {
         }
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_SHAD;
+    }
 }

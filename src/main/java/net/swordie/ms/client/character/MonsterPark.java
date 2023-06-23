@@ -131,24 +131,23 @@ public class MonsterPark {
 
     public static int getRewardByDay() {
         int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        switch (day) {
-            case Calendar.SUNDAY: // Growth Box
-                return 2434745;
-            case Calendar.MONDAY: // Crafting Box
-                return 2434746;
-            case Calendar.TUESDAY: // Enhancement Box
-                return 2434747;
-            case Calendar.WEDNESDAY: // Traits Box
-                return 2434748;
-            case Calendar.THURSDAY: // Honor Box
-                return 2434749;
-            case Calendar.FRIDAY: // Mesos Box
-                return 2434750;
-            case Calendar.SATURDAY: // Monster Park Box
-                return 2434751;
-            default:
-                return 2434745; // Sunday's Growth Box
-        }
+        return switch (day) {
+            case Calendar.SUNDAY -> // Growth Box
+                    2434745;
+            case Calendar.MONDAY -> // Crafting Box
+                    2434746;
+            case Calendar.TUESDAY -> // Enhancement Box
+                    2434747;
+            case Calendar.WEDNESDAY -> // Traits Box
+                    2434748;
+            case Calendar.THURSDAY -> // Honor Box
+                    2434749;
+            case Calendar.FRIDAY -> // Mesos Box
+                    2434750;
+            case Calendar.SATURDAY -> // Monster Park Box
+                    2434751;
+            default -> 2434745; // Sunday's Growth Box
+        };
     }
 
 

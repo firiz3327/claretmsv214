@@ -1,6 +1,6 @@
 package net.swordie.ms.connection.db;
 
-import com.mysql.jdbc.Connection;
+import net.swordie.ms.claretms.MatrixEnhanceSlot;
 import net.swordie.ms.client.Account;
 import net.swordie.ms.client.LinkSkill;
 import net.swordie.ms.client.User;
@@ -129,6 +129,7 @@ public class DatabaseManager {
                 Alliance.class,
                 DropInfo.class,
                 MatrixRecord.class,
+                MatrixEnhanceSlot.class,
                 Offense.class,
                 OffenseManager.class,
                 NpcShopItem.class,

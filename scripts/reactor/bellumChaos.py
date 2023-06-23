@@ -1,3 +1,4 @@
+import time
 from net.swordie.ms.enums import WeatherEffNoticeType
 if chr.getInstance() is not None:
     sm.removeReactor()

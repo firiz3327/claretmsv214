@@ -144,7 +144,6 @@ public class ItemUpgradeHandler {
                 equip.addStat(tuc, 1); // +1 upgrades available
                 equip.updateToChar(chr);
                 chr.write(WvsContext.goldHammerItemUpgradeResult(GoldHammerResult.Success, 0, equip.getIuc()));
-                chr.chatMessage("a");
             } else {
                 equip.updateToChar(chr);
                 chr.write(WvsContext.goldHammerItemUpgradeResult(GoldHammerResult.Fail, 1, equip.getIuc()));

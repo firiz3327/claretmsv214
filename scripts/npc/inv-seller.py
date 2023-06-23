@@ -12,7 +12,7 @@ def disposeAll():
 def sellItemsFromTab(invType = InvType.EQUIP):
     # query inv info
     inventory = chr.getInventoryByType(invType)
-    invItems = inventory.getItems()
+    invItems = sm.list(inventory.getItems())
     tabName = ""
     if invType == InvType.CONSUME:
         tabName = "CONSUME"
@@ -30,7 +30,7 @@ def sellItemsFromTab(invType = InvType.EQUIP):
     # has at least 1 item in inv
     if len(invItems) == 1:
         # only has 1 item, proceed to ask for confirmation
-        sellingItems = list(invItems)
+        sellingItems = invItems
         _itemId = invItems.get(0).getItemId()
         confirmed = sm.sendAskYesNo("Are you sure you want to sell #i{}# #z{}#".format(_itemId, _itemId))
     else:
@@ -40,19 +40,21 @@ def sellItemsFromTab(invType = InvType.EQUIP):
         if option:
             if option == 1:
                 # sell everything
-                sellingItems = list(invItems)
+                sellingItems = invItems
                 confirmed = sm.sendAskYesNo("Are you sure you want to sell #rEVERYTHING#k in your Equipment inventory?")
             if option == 2:
                 # sell from/to
-                sortedItems = list(invItems)
+                sortedItems = invItems
                 sortedItems.sort(key=lambda x: x.getBagIndex())
                 itemListTemplate = "This option will sell all available items between STARTING item and ENDING item.\r\nPlease select #r<order>#k item:\r\n"
                 for item in sortedItems:
                     itemListTemplate += "#L{}##i{}# #z{}##l\r\n".format(item.getBagIndex(), item.getItemId(), item.getItemId())
+                
                 startIndex = sm.sendNext(itemListTemplate.replace("<order>", "STARTING"))
                 endIndex = sm.sendNext(itemListTemplate.replace("<order>", "ENDING"))
                 if startIndex > endIndex:
                     startIndex, endIndex = endIndex, startIndex
+                
                 sellingItems = filter(lambda x: (startIndex <= x.getBagIndex() <= endIndex), sortedItems)
                 soldItemsTemplate = "You will sell the following items:\r\n"
                 for item in sellingItems:
@@ -103,7 +105,7 @@ def sellItemsFromTab(invType = InvType.EQUIP):
         disposeAll()
         return
 
-inventoryList = "Please which inventory you want to sell:\r\n#L1#Equipment#l\r\n#L2#Consume#l\r\n#L3#ETC#l\r\n"
+inventoryList = "Please select which inventory you want to sell:\r\n#L1#Equipment#l\r\n#L2#Consume#l\r\n#L3#ETC#l\r\n"
 selectedInv = sm.sendNext(inventoryList)
 
 if selectedInv == 1:

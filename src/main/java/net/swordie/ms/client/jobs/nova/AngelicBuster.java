@@ -847,4 +847,9 @@ public class AngelicBuster extends Job {
         Item secondary = ItemData.getItemDeepCopy(1352601); // Pink Soul Ring (Secondary)
         chr.forceUpdateSecondary(null, secondary);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return NOVA_WARRIOR_AB;
+    }
 }

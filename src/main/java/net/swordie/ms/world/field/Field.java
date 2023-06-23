@@ -465,6 +465,7 @@ public class Field {
         }
         return new Tuple<>(left, right);
     }
+
     public Foothold findFootHoldBelow(Position pos) {
         Set<Foothold> footholds = getFootholds().stream().filter(fh -> fh.getX1() <= pos.getX() && fh.getX2() >= pos.getX()).collect(Collectors.toSet());
         Foothold res = null;
@@ -568,7 +569,7 @@ public class Field {
         broadcastPacket(FieldPacket.addWreckage(wreckage, getWreckageByChrId(chr.getId()).size()));
         EventManager.addEvent(() -> removeWreckage(chr, wreckage), wreckage.getDuration(), TimeUnit.MILLISECONDS);
     }
-    
+
 
     public void removeWreckage(Char chr, Wreckage wreckage) {
         removeWreckage(chr, Arrays.asList(wreckage));
@@ -690,7 +691,7 @@ public class Field {
         broadcastPacket(FieldPacket.removeBlowWeather());
         this.weatherItemID = itemID;
         this.weatherMsg = message;
-        this.weatherEndTime = System.currentTimeMillis() + 1000 * seconds;
+        this.weatherEndTime = System.currentTimeMillis() + 1000L * seconds;
         this.weatherAvatarLook = packedAvatarLook;
         broadcastPacket(FieldPacket.blowWeather(itemID, message, seconds, packedAvatarLook));
     }
@@ -776,7 +777,6 @@ public class Field {
             chr.chatMessage("field == " + getId() + ", removed " + id);
         }
     }
-
 
 
     public Map<Life, Char> getLifeToControllers() {
@@ -985,13 +985,13 @@ public class Field {
     }
 
     private void removeBlowWeatherUpdate() {
-            long curTime = System.currentTimeMillis();
-            if (weatherItemID / 10000 == 512 && weatherEndTime < curTime) {
-                this.weatherItemID = 0;
-                this.weatherMsg = null;
-                broadcastPacket(FieldPacket.removeBlowWeather());
-            }
+        long curTime = System.currentTimeMillis();
+        if (weatherItemID / 10000 == 512 && weatherEndTime < curTime) {
+            this.weatherItemID = 0;
+            this.weatherMsg = null;
+            broadcastPacket(FieldPacket.removeBlowWeather());
         }
+    }
 
     public List<PartyMember> getPartyMembersInRect(Char chr, Rect rect) {
         Party party = chr.getParty();
@@ -1113,7 +1113,6 @@ public class Field {
     }
 
 
-
     public synchronized void removeDrop(int dropID, int pickupUserID, boolean fromSchedule, int petID) {
         Life life = getLifeByObjectID(dropID);
         if (life instanceof Drop) {
@@ -1126,9 +1125,9 @@ public class Field {
                 broadcastPacket(DropPool.dropLeaveField(DropLeaveType.Fade, pickupUserID, life.getObjectId(),
                         (short) 0, 0, 0));
             }
-                removeLife(dropID, fromSchedule);
-            }
+            removeLife(dropID, fromSchedule);
         }
+    }
 
 
     public Map<Life, ScheduledFuture> getLifeSchedules() {
@@ -1205,9 +1204,9 @@ public class Field {
             drop.setObjectId(getNewObjectID()); // just so the client sees the drop
         }
         // Check for collision items such as exp orbs from combo kills
-       // if (!isTradable) {
-          //  broadcastPacket(DropPool.dropEnterField(drop, posFrom, 0, DropEnterType.Default));
-         if (drop.getItem() != null && ItemConstants.isCollisionLootItem(drop.getItem().getItemId())) {
+        // if (!isTradable) {
+        //  broadcastPacket(DropPool.dropEnterField(drop, posFrom, 0, DropEnterType.Default));
+        if (drop.getItem() != null && ItemConstants.isCollisionLootItem(drop.getItem().getItemId())) {
             broadcastPacket(DropPool.dropEnterFieldCollisionPickUp(drop, posFrom, 0));
         } else {
             for (Char chr : getChars()) {
@@ -1437,7 +1436,7 @@ public class Field {
         mob.setHomeFoothold(fh);
         spawnLife(mob, null);
         if (MobConstants.isTimedDropMob(mob.getTemplateId())) {
-        mob.startDropItemSchedule();
+            mob.startDropItemSchedule();
         }
         return mob;
     }
@@ -1586,9 +1585,9 @@ public class Field {
             // shuffle so the mobs spawn on random positions, instead of a fixed order
             Collections.shuffle(shuffledMobs);
             for (MobGen mg : shuffledMobs) {
-                if (mg.canSpawnOnField(this)) {                     
+                if (mg.canSpawnOnField(this)) {
                     mg.spawnMob(this, buffed);
-                    currentMobs++;    
+                    currentMobs++;
                     if ((getFieldLimit() & FieldOption.NoMobCapacityLimit.getVal()) == 0
                             && currentMobs > getFixedMobCapacity()) {
                         break;
@@ -1620,16 +1619,16 @@ public class Field {
 
     public List<Integer> getNoRespawn() {
         return noRespawnList;
-    }    
-    
+    }
+
     public void setNoRespawn(List<Integer> mobid) {
-         noRespawnList = mobid;
-    } 
-    
+        noRespawnList = mobid;
+    }
+
     public void clearRespawn() {
         noRespawnList = null;
-    }    
-    
+    }
+
     public void setOpenGates(List<OpenGate> openGateList) {
         this.openGateList = openGateList;
     }
@@ -1781,14 +1780,14 @@ public class Field {
     public void setChangeToChannelOnLeave(boolean changeToChannelOnLeave) {
         this.changeToChannelOnLeave = changeToChannelOnLeave;
     }
-    
+
     public final void setRespawn(final boolean fm) {
         this.respawn = fm;
     }
 
     public final boolean getRespawn() {
         return respawn;
-    }    
+    }
 
     public Map<String, Object> getProperties() {
         return properties;

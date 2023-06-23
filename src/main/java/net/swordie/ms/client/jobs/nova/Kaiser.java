@@ -911,4 +911,9 @@ public class Kaiser extends Job {
         Item secondary =  ItemData.getItemDeepCopy(1352500); // Nova's Essence (Secondary)
         chr.forceUpdateSecondary(null, secondary);
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return NOVA_WARRIOR_KAISER;
+    }
 }

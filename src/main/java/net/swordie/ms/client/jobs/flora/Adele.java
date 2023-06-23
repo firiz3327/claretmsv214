@@ -300,14 +300,7 @@ public class Adele extends Job {
                 o.nOption = 1;
                 o.rOption = skill.getSkillId();
                 o.tOption = si.getValue(SkillStat.time, slv);
-                for (MobAttackInfo mai : attackInfo.mobAttackInfo) {
-                    Mob mob = (Mob) chr.getField().getLifeByObjectID(mai.mobId);
-                    if (mob == null) {
-                        continue;
-                    }
-                    MobTemporaryStat mts = mob.getTemporaryStat();
-                    mts.addStatOptionsAndBroadcast(MobStat.Stun, o);
-                }
+                Job.applyStun(attackInfo, chr, o);
                 break;
             case AETHER_FORGE_1:
             case AETHER_FORGE_2:
@@ -713,6 +706,11 @@ public class Adele extends Job {
         if (secondary != null) {
             chr.addItemToInventory(secondary);
         }
+    }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return HERO_OF_THE_FLORA;
     }
 
 }

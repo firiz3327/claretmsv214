@@ -389,4 +389,9 @@ public class Marksman extends Archer {
     public void cancelTimers() {
         super.cancelTimers();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_XBOW;
+    }
 }

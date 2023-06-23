@@ -711,4 +711,9 @@ public class Hayato extends Job {
     public void handleJobEnd() {
         super.handleJobEnd();
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return AKATSUKI_HERO_HAYATO;
+    }
 }

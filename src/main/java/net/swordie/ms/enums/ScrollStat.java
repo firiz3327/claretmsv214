@@ -41,7 +41,30 @@ public enum ScrollStat {
     optionType,
     recover,
     reset,
-    perfectReset;
+    perfectReset,
+    reduceCooltime,
+    boss,
+    ignoreTargetDEF,
+    incSTRr,
+    incDEXr,
+    incINTr,
+    incLUKr,
+    incCriticaldamageMin,
+    incCriticaldamageMax,
+    cCr,
+    incDAMr,
+    incPDDr,
+    incMDDr,
+    incEVAr,
+    incACCr,
+    incMHPr,
+    incMMPr,
+    incTerR,
+    incAsrR,
+    incMesoProp,
+    incRewardProp,
+    setItemCategory,
+    ;
 
     public static ScrollStat getScrollStatByString(String name) {
         return Arrays.stream(values()).filter(ss -> ss.toString().equalsIgnoreCase(name))

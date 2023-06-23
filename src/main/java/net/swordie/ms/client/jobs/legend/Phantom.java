@@ -922,5 +922,10 @@ public class Phantom extends Job {
         // Items
         chr.forceUpdateSecondary(null, ItemData.getItemDeepCopy(1352100)); // Carte Magique
     }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_PH;
+    }
 }
 

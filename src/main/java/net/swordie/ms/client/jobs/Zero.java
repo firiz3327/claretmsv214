@@ -762,5 +762,10 @@ public class Zero extends Job {
         chr.addItemToInventory(frenzyTotem);
     }
 
+    @Override
+    public int getMapleWarriorSkillID() {
+        return RHINNES_PROTECTION;
+    }
+
 }
 

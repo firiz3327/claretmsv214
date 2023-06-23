@@ -398,8 +398,9 @@ public class Hero extends Warrior {
                     if (mob == null || totalDmg < mob.getHp()) {
                         continue;
                     }
-                    chr.getField().broadcastPacket(MobPool.specialSelectedEffectBySkill(mob, skillID, chr.getId()));
-
+                    // 専用 敵モブ死亡時エフェクトっぽい クラッシュするので普通のspecialEffectBySkillを使う
+                    chr.getField().broadcastPacket(MobPool.specialEffectBySkill(mob, skillID, chr.getId(), (short) 1000));
+//                  chr.getField().broadcastPacket(MobPool.specialSelectedEffectBySkill(mob, skillID, chr.getId()));
                 }
                 removeCombo(si.getValue(y, slv));
                 o1.nValue = si.getValue(y, slv) * 10; // 6 combo orbs * 10% FD
@@ -569,7 +570,7 @@ public class Hero extends Warrior {
                     }
                     field.spawnSummon(summon);
                 } else {
-                    soulBladeTime = Util.getCurrentTimeLong() + 1000 * si.getValue(time, slv);
+                    soulBladeTime = Util.getCurrentTimeLong() + 1000L * si.getValue(time, slv);
                     summon = Summon.getSummonBy(chr, BURNING_SOUL_BLADE, slv);
                     summon.setMoveAbility(MoveAbility.Walk);
 
@@ -659,5 +660,10 @@ public class Hero extends Warrior {
             selfRecoveryTimer.cancel(false);
         }
         super.cancelTimers();
+    }
+
+    @Override
+    public int getMapleWarriorSkillID() {
+        return MAPLE_WARRIOR_HERO;
     }
 }
